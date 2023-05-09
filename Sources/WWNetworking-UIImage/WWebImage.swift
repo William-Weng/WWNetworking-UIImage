@@ -184,7 +184,7 @@ private extension WWWebImage {
         }
     }
     
-    /// 取得有關圖片的Header快取資訊 => 最後更新時間 / Etag / 檔案大小
+    /// [取得有關圖片的Header快取資訊 => 最後更新時間 / Etag / 檔案大小](https://zh.wikipedia.org/zh-tw/HTTP头字段)
     /// - Parameters:
     ///   - urlString: 圖片網址
     ///   - result: Result<CacheHeaderFields, Error>
@@ -198,11 +198,11 @@ private extension WWWebImage {
             case .failure(let error): result(.failure(error))
             case .success(let info):
                 
-                guard let allHeaderFields = info.response?.allHeaderFields else { result(.failure(Constant.MyError.isEmpty)); return }
+                guard let allHeaderFields = info.response?._allHeaderFields() else { result(.failure(Constant.MyError.isEmpty)); return }
                 
-                let lastModified = allHeaderFields["Last-Modified"] as? String
-                let eTag = allHeaderFields["Etag"] as? String
-                let contentLength = allHeaderFields["Content-Length"] as? String
+                let lastModified = allHeaderFields["last-modified"] as? String
+                let eTag = allHeaderFields["etag"] as? String
+                let contentLength = allHeaderFields["content-length"] as? String
                 
                 var fields: Constant.CacheHeaderFields = (lastModified: lastModified, eTag: eTag, contentLength: 0)
                 if let contentLength = contentLength { fields.contentLength = Int(contentLength) }

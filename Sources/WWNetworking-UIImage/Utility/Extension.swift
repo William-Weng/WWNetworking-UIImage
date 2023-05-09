@@ -22,7 +22,7 @@ extension Notification {
     static func _name(_ name: Constant.NotificationName) -> Notification.Name { return name.value }
 }
 
-// MARK: - NotificationCenter (class function)
+// MARK: - NotificationCenter (function)
 extension NotificationCenter {
     
     /// 註冊通知
@@ -93,7 +93,7 @@ extension JSONSerialization {
     }
 }
 
-// MARK: - Encodable (class function)
+// MARK: - Encodable (function)
 extension Encodable {
     
     /// Class => JSON Data
@@ -117,7 +117,7 @@ extension Encodable {
     }
 }
 
-// MARK: - Data (class function)
+// MARK: - Data (function)
 extension Data {
     
     /// Data => 字串
@@ -154,7 +154,7 @@ extension Data {
     }
 }
 
-// MARK: - Dictionary (class function)
+// MARK: - Dictionary (function)
 extension Dictionary {
     
     /// Dictionary => JSON Data
@@ -174,7 +174,7 @@ extension Dictionary {
 }
 
 
-// MARK: - String (class function)
+// MARK: - String (function)
 extension String {
     
     /// [文字 => SHA1](https://stackoverflow.com/questions/25761344/how-to-hash-nsstring-with-sha1-in-swift)
@@ -228,7 +228,7 @@ private extension String {
     }
 }
 
-// MARK: - FileManager (class function)
+// MARK: - FileManager (function)
 extension FileManager {
     
     /// [取得User的資料夾](https://cdfq152313.github.io/post/2016-10-11/)
@@ -292,7 +292,7 @@ extension FileManager {
     }
 }
 
-// MARK: - Date (class function)
+// MARK: - Date (function)
 extension Date {
     
     /// [增加日期 => 年 / 月 / 日](https://areckkimo.medium.com/用uipageviewcontroller實作萬年曆-76edaac841e1)
@@ -303,5 +303,30 @@ extension Date {
     /// - Returns: Date?
     func _adding(component: Calendar.Component = .day, value: Int, for calendar: Calendar = .current) -> Date? {
         return calendar.date(byAdding: component, value: value, to: self)
+    }
+}
+
+// MARK: - HTTPURLResponse (function)
+extension HTTPURLResponse {
+        
+    /// [取得header的欄位數值 (轉全大寫或小寫) => HTML Tag 沒分大小寫](https://zh.wikipedia.org/zh-tw/HTTP头字段)
+    /// - Parameter isLowercased: 轉成小寫？
+    /// - Returns: [AnyHashable : Any]
+    func _allHeaderFields(isLowercased: Bool = true) -> [AnyHashable : Any] {
+        
+        var headerFields: [AnyHashable : Any]  = [:]
+        
+        allHeaderFields.forEach() { key, value in
+            
+            var field = key
+            
+            if let key = key as? String {
+                field = (!isLowercased) ? key.uppercased() : key.lowercased()
+            }
+            
+            headerFields[field] = value
+        }
+        
+        return headerFields
     }
 }
