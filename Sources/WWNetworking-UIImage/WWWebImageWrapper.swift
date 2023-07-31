@@ -8,14 +8,18 @@
 import UIKit
 import WWPrint
 
+// MARK: - WWWebImageProtocol
 public protocol WWWebImageProtocol: UIImageView {}
 
+// MARK: - WWWebImageProtocol
 extension WWWebImageProtocol {
     public var WW: WWWebImageWrapper<Self> { return WWWebImageWrapper(self) }
 }
 
+// MARK: - UIImageView + WWWebImageProtocol
 extension UIImageView: WWWebImageProtocol {}
 
+// MARK: - WWWebImageWrapper
 open class WWWebImageWrapper<T: UIImageView> {
     
     private var imageView: T

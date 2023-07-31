@@ -164,7 +164,7 @@ private extension WWWebImage {
         self.imageUrlCacheHeader(urlString: urlString) { cacheResult in
             
             switch cacheResult {
-            case .failure(let error): wwPrint(error)
+            case .failure(_): completion(false)
             case .success(let fields):
 
                 let isNeededUpdate = self.updateImageRule(urlString: urlString, fields: fields)
