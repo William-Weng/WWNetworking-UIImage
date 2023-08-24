@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "WWNetworking-UIImage",
     platforms: [
-        .iOS(.v13)
+        .iOS(.v14)
     ],
     products: [
         .library(name: "WWNetworking-UIImage", targets: ["WWNetworking-UIImage"]),
