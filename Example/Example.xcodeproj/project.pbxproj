@@ -14,6 +14,7 @@
 		3DBCD88026F198F300522E3B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DBCD87E26F198F300522E3B /* LaunchScreen.storyboard */; };
 		8122C2292B14895F00E3138F /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 8122C2282B14895F00E3138F /* WWNetworking-UIImage */; };
 		815AF24A29F0F55A00A8CC4D /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815AF24929F0F55A00A8CC4D /* TableViewCell.swift */; };
+		81D81A8A2B148EEF00EC8A05 /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 81D81A892B148EEF00EC8A05 /* WWNetworking-UIImage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,7 +25,6 @@
 		3DBCD87C26F198F300522E3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3DBCD87F26F198F300522E3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3DBCD88126F198F300522E3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8122C2262B14892B00E3138F /* WWNetworking-UIImage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "WWNetworking-UIImage"; path = ..; sourceTree = "<group>"; };
 		815AF24929F0F55A00A8CC4D /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -33,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81D81A8A2B148EEF00EC8A05 /* WWNetworking-UIImage in Frameworks */,
 				8122C2292B14895F00E3138F /* WWNetworking-UIImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -43,7 +44,6 @@
 		3DBCD86726F198EF00522E3B = {
 			isa = PBXGroup;
 			children = (
-				8122C2252B14892B00E3138F /* Packages */,
 				3DBCD87226F198EF00522E3B /* Example */,
 				3DBCD87126F198EF00522E3B /* Products */,
 				8122C2272B14895F00E3138F /* Frameworks */,
@@ -104,14 +104,6 @@
 			name = Setting;
 			sourceTree = "<group>";
 		};
-		8122C2252B14892B00E3138F /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				8122C2262B14892B00E3138F /* WWNetworking-UIImage */,
-			);
-			name = Packages;
-			sourceTree = "<group>";
-		};
 		8122C2272B14895F00E3138F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -137,6 +129,7 @@
 			name = Example;
 			packageProductDependencies = (
 				8122C2282B14895F00E3138F /* WWNetworking-UIImage */,
+				81D81A892B148EEF00EC8A05 /* WWNetworking-UIImage */,
 			);
 			productName = Example;
 			productReference = 3DBCD87026F198EF00522E3B /* Example.app */;
@@ -166,6 +159,7 @@
 			);
 			mainGroup = 3DBCD86726F198EF00522E3B;
 			packageReferences = (
+				81D81A882B148EEF00EC8A05 /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */,
 			);
 			productRefGroup = 3DBCD87126F198EF00522E3B /* Products */;
 			projectDirPath = "";
@@ -401,9 +395,25 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		81D81A882B148EEF00EC8A05 /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/William-Weng/WWNetworking-UIImage";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		8122C2282B14895F00E3138F /* WWNetworking-UIImage */ = {
 			isa = XCSwiftPackageProductDependency;
+			productName = "WWNetworking-UIImage";
+		};
+		81D81A892B148EEF00EC8A05 /* WWNetworking-UIImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 81D81A882B148EEF00EC8A05 /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */;
 			productName = "WWNetworking-UIImage";
 		};
 /* End XCSwiftPackageProductDependency section */
