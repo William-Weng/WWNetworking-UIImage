@@ -61,13 +61,13 @@ open class WWWebImageWrapper<T: UIImageView> {
     /// 更新圖片畫面 => NotificationCenter
     func refreahImageView() {
         
-        NotificationCenter.default._register(name: .refreahImageView) { notification in
+        NotificationCenter.default._remove(observer: self, name: .refreahImageView)
+        NotificationCenter.default._register(name: .refreahImageView) { [weak self] notification in
             
-            DispatchQueue.main.async {
-                if let urlString = self.urlString { self.cacheImageSetting(urlString: urlString) }
-            }
+            guard let this = self else { return }
             
-            NotificationCenter.default._post(name: .downloadWebImage, object: self.urlString)
+            DispatchQueue.main.async { if let urlString = this.urlString { this.cacheImageSetting(urlString: urlString) }}
+            NotificationCenter.default._post(name: .downloadWebImage, object: this.urlString)
         }
     }
     
