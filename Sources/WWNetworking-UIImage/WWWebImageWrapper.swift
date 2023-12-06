@@ -70,7 +70,7 @@ open class WWWebImageWrapper<T: UIImageView> {
         
         NotificationCenter.default._register(name: .refreahImageView) { notification in
             NotificationCenter.default._post(name: .downloadWebImage, object: self.urlString)
-            DispatchQueue.main.async { self.cacheImageSetting(urlString: self.urlString) }
+            DispatchQueue.main.safeAsync { self.cacheImageSetting(urlString: self.urlString) }
         }
     }
     

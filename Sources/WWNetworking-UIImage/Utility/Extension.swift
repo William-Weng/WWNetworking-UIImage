@@ -8,6 +8,17 @@
 import UIKit
 import CommonCrypto
 
+// MARK: - DispatchQueue (function)
+extension DispatchQueue {
+    
+    /// 安全非同步執行緒
+    /// - Parameter block: () -> ()
+    func safeAsync(_ block: @escaping () -> ()) {
+        if self === DispatchQueue.main && Thread.isMainThread { block(); return }
+        async { block() }
+    }
+}
+
 // MARK: - Notification (static function)
 extension Notification {
     
