@@ -25,7 +25,7 @@ open class WWWebImageWrapper<T: UIImageView> {
     private var imageView: T
     private var urlString: String?
     private var defaultImage: UIImage?
-
+    
     public init(_ imageView: T) {
         self.imageView = imageView
         self.refreahImageView()
@@ -50,24 +50,27 @@ open class WWWebImageWrapper<T: UIImageView> {
     
     /// 設定快取圖片
     /// - Parameter urlString: String
-    func cacheImageSetting(urlString: String) {
+    func cacheImageSetting(urlString: String?) {
         
-        let cacheImage = WWWebImage.shared.cacheImage(with: urlString)
-                
-        self.imageView.image = cacheImage ?? self.defaultImage
-        self.imageView.setNeedsDisplay()
+        defer { imageView.setNeedsDisplay() }
+        
+        guard let urlString = urlString,
+              let cacheImage = WWWebImage.shared.cacheImage(with: urlString)
+        else {
+            imageView.image = defaultImage; return
+        }
+        
+        imageView.image = cacheImage
     }
     
     /// 更新圖片畫面 => NotificationCenter
     func refreahImageView() {
         
         NotificationCenter.default._remove(observer: self, name: .refreahImageView)
-        NotificationCenter.default._register(name: .refreahImageView) { [weak self] notification in
-            
-            guard let this = self else { return }
-            
-            DispatchQueue.main.async { if let urlString = this.urlString { this.cacheImageSetting(urlString: urlString) }}
-            NotificationCenter.default._post(name: .downloadWebImage, object: this.urlString)
+        
+        NotificationCenter.default._register(name: .refreahImageView) { notification in
+            NotificationCenter.default._post(name: .downloadWebImage, object: self.urlString)
+            DispatchQueue.main.async { self.cacheImageSetting(urlString: self.urlString) }
         }
     }
     
