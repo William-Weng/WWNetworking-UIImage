@@ -89,6 +89,7 @@ extension API {
     
     /// 更新圖片快取資訊
     /// - Parameters:
+    ///   - id: Int
     ///   - fields: CacheHeaderFields
     ///   - tableName: String
     /// - Returns: Bool
@@ -101,6 +102,26 @@ extension API {
         if let lastModified = fields.lastModified { items.append((key: "lastModified", value: lastModified)) }
         if let eTag = fields.eTag { items.append((key: "eTag", value: eTag)) }
         if let contentLength = fields.contentLength { items.append((key: "contentLength", value: contentLength)) }
+        items.append((key: "updateTime", value: Date()._localTime()))
+
+        let condition = SQLite3Condition.Where().isCompare(key: "id", type: .equal, value: id)
+        let result = database.update(tableName: tableName, items: items, where: condition)
+        
+        return result.isSussess
+    }
+    
+    /// 更新圖片更新時間
+    /// - Parameters:
+    ///   - id: Int
+    ///   - tableName: String
+    /// - Returns: Bool
+    func updateCacheImageUpdateTime(id: Int, for tableName: String) -> Bool {
+        
+        guard let database = Constant.database else { return false }
+        
+        var items: [SQLite3Database.InsertItem] = []
+        
+        items.append((key: "updateTime", value: Date()._localTime()))
         
         let condition = SQLite3Condition.Where().isCompare(key: "id", type: .equal, value: id)
         let result = database.update(tableName: tableName, items: items, where: condition)

@@ -168,7 +168,11 @@ private extension WWWebImage {
             case .success(let fields):
 
                 let isNeededUpdate = self.updateImageRule(urlString: urlString, fields: fields)
-                if (!isNeededUpdate) { completion(false); return }
+                
+                if (!isNeededUpdate) {
+                    let _ = API.shared.updateCacheImageUpdateTime(id: imageInfo.id, for: Constant.tableName)
+                    completion(false); return
+                }
                 
                 let _ = API.shared.updateCacheImageInformation(id: imageInfo.id, fields: fields, for: Constant.tableName)
 
@@ -221,7 +225,7 @@ private extension WWWebImage {
         
         guard let urlString = urlString else { completion(.failure(Constant.MyError.notOpenURL)); return }
         
-        _ = WWNetworking().download(urlString: urlString, delegateQueue: nil) { info in
+        _ = WWNetworking.build().download(urlString: urlString, delegateQueue: nil) { info in
             progress(info)
         
         } completion: { downloadResult in

@@ -36,7 +36,7 @@ open class WWWebImageWrapper<T: UIImageView> {
     ///   - urlString: 下載的圖片路徑
     ///   - defaultImage: 本機預設圖片
     public func downloadImage(with urlString: String?, defaultImage: UIImage? = nil) {
-                
+        
         guard let urlString = urlString else { return }
         
         self.urlString = urlString
@@ -65,7 +65,7 @@ open class WWWebImageWrapper<T: UIImageView> {
     
     /// 更新圖片畫面 => NotificationCenter
     func refreahImageView() {
-        
+               
         NotificationCenter.default._remove(observer: self, name: .refreahImageView)
         
         NotificationCenter.default._register(name: .refreahImageView) { notification in

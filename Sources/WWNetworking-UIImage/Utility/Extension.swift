@@ -165,6 +165,26 @@ extension Data {
     }
 }
 
+// MARK: - Date (function)
+extension Date {
+    
+    /// 將UTC時間 => 該時區的時間
+    /// - 2020-07-07 16:08:50 +0800
+    /// - Parameters:
+    ///   - dateFormat: 時間格式
+    ///   - timeZone: 時區辨識
+    /// - Returns: String?
+    func _localTime(dateFormat: String = "yyyy-MM-dd HH:mm:ss", timeZone: TimeZone? = TimeZone(identifier: "UTC")) -> String {
+        
+        let dateFormatter = DateFormatter()
+        
+        dateFormatter.dateFormat = "\(dateFormat)"
+        dateFormatter.timeZone = timeZone
+        
+        return dateFormatter.string(from: self)
+    }
+}
+
 // MARK: - Dictionary (function)
 extension Dictionary {
     
