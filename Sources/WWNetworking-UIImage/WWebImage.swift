@@ -27,13 +27,15 @@ public extension WWWebImage {
     /// [初始化資料表 / 資料庫](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
     /// - Parameters:
     ///   - directoryType: 要存放的資料夾
-    ///   - expiredDays: 圖片要清除的過期時間
+    ///   - expiredDays: 圖片要清除的過期時間 (for 更新時間)
+    ///   - cacheDelayTime: 圖片要更新的快取時間 (for 更新時間 / 避免一直更新)
     /// - Returns: Result<SQLite3Database.ExecuteResult, Error>
-    static func initDatabase(for directoryType: WWSQLite3Manager.FileDirectoryType = .documents, expiredDays: Int = 90) -> Result<SQLite3Database.ExecuteResult, Error> {
+    static func initDatabase(for directoryType: WWSQLite3Manager.FileDirectoryType = .documents, expiredDays: Int = 90, cacheDelayTime: TimeInterval = 60) -> Result<SQLite3Database.ExecuteResult, Error> {
         
         let result = WWSQLite3Manager.shared.connent(for: directoryType, filename: Constant.databaseName)
         Constant.cacheImageFolderType = directoryType
-        
+        Constant.cacheDelayTime = cacheDelayTime
+
         defer { removeExpiredCacheImages(expiredDays) }
         
         switch result {
@@ -153,14 +155,20 @@ private extension WWWebImage {
         self.downloadImageAction(with: urlString) { isSuccess in completion(isSuccess) }
     }
     
-    /// 下載圖片功能
+    /// 下載圖片功能 (會避免一直更新)
     /// - Parameters:
     ///   - urlString: String
     ///   - completion: (Bool) -> Void
     func downloadImageAction(with urlString: String, completion: @escaping (Bool) -> Void) {
         
-        guard let imageInfo = API.shared.searchCacheImageInformation(urlString, for: Constant.tableName).first?._jsonClass(for: WebImageInformation.self) else { completion(true); return }
+        guard let imageInfo = API.shared.searchCacheImageInformation(urlString, for: Constant.tableName).first?._jsonClass(for: WebImageInformation.self) else { completion(false); return }
         
+        let cacheDelayTime = Date().timeIntervalSince1970 - Constant.cacheDelayTime
+        let updateTime = imageInfo.updateTime.timeIntervalSince1970
+        let contentLength = imageInfo.contentLength ?? 0
+        
+        if (updateTime > cacheDelayTime && contentLength > 0) { completion(false); return }
+                
         self.imageUrlCacheHeader(urlString: urlString) { cacheResult in
             
             switch cacheResult {

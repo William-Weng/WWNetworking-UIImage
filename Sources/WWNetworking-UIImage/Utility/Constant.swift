@@ -17,6 +17,7 @@ final class Constant: NSObject {
     static let databaseName = "WWWebImage.db"
     static let tableName = "CacheImage"
     
+    static var cacheDelayTime = 60.0
     static var cacheImageFolder = WWSQLite3Manager.FileDirectoryType.caches.url()    
     static var cacheImageFolderType: WWSQLite3Manager.FileDirectoryType = .caches {
         willSet { Self.cacheImageFolder = newValue.url() }
