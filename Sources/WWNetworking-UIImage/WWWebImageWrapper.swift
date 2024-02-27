@@ -31,11 +31,20 @@ open class WWWebImageWrapper<T: UIImageView> {
         self.refreahImageView()
     }
     
+    deinit {
+        NotificationCenter.default._remove(observer: self, name: .refreahImageView)
+        wwPrint("deinit => \(Self.self)")
+    }
+}
+
+// MARK: - 公開函式
+public extension WWWebImageWrapper {
+    
     /// 下載網路圖片
     /// - Parameters:
     ///   - urlString: 下載的圖片路徑
     ///   - defaultImage: 本機預設圖片
-    public func downloadImage(with urlString: String?, defaultImage: UIImage? = nil) {
+    func downloadImage(with urlString: String?, defaultImage: UIImage? = nil) {
         
         guard let urlString = urlString else { return }
         
@@ -47,6 +56,10 @@ open class WWWebImageWrapper<T: UIImageView> {
         
         NotificationCenter.default._post(name: .downloadWebImage, object: urlString)
     }
+}
+
+// MARK: - 小工具
+private extension WWWebImageWrapper {
     
     /// 設定快取圖片
     /// - Parameter urlString: String
@@ -60,7 +73,7 @@ open class WWWebImageWrapper<T: UIImageView> {
             imageView.image = defaultImage; return
         }
         
-        imageView.image = cacheImage
+        imageView.image = cacheImage 
     }
     
     /// 更新圖片畫面 => NotificationCenter
@@ -69,13 +82,11 @@ open class WWWebImageWrapper<T: UIImageView> {
         NotificationCenter.default._remove(observer: self, name: .refreahImageView)
         
         NotificationCenter.default._register(name: .refreahImageView) { notification in
-            NotificationCenter.default._post(name: .downloadWebImage, object: self.urlString)
-            DispatchQueue.main.safeAsync { self.cacheImageSetting(urlString: self.urlString) }
+            
+            let urlString = self.urlString
+            
+            NotificationCenter.default._post(name: .downloadWebImage, object: urlString)
+            DispatchQueue.main.safeAsync { self.cacheImageSetting(urlString: urlString) }
         }
-    }
-    
-    deinit {
-        NotificationCenter.default._remove(observer: self, name: .refreahImageView)
-        wwPrint("deinit => \(Self.self)")
     }
 }

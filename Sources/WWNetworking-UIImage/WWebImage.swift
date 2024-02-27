@@ -35,7 +35,7 @@ public extension WWWebImage {
         let result = WWSQLite3Manager.shared.connent(for: directoryType, filename: Constant.databaseName)
         Constant.cacheImageFolderType = directoryType
         Constant.cacheDelayTime = cacheDelayTime
-
+        
         defer { removeExpiredCacheImages(expiredDays: expiredDays) }
         
         switch result {
@@ -44,7 +44,7 @@ public extension WWWebImage {
             
             let result = createDatabase(database, for: Constant.tableName)
             Constant.database = database
-            
+                        
             return .success(result)
         }
     }
@@ -108,7 +108,7 @@ private extension WWWebImage {
 }
 
 // MARK: - WWNetworking (公開工具)
-extension WWWebImage {
+public extension WWWebImage {
     
     /// 讀取存在手機的快取圖示檔
     /// - Parameter filename: String?

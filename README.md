@@ -22,6 +22,7 @@ dependencies: [
 |initDatabase(for:expiredDays:cacheDelayTime:)|初始化資料庫|
 |removeExpiredCacheImages(expiredDays:)|移除過期圖片|
 |downloadImage(with:defaultImage:)|下載圖片|
+|cacheImage(with:)|讀取快取圖片|
 
 ## Example
 ```swift
