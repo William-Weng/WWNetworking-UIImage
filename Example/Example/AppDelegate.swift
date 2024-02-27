@@ -7,6 +7,7 @@
 /// file:///Users/ios/Desktop/@WWNetworking-UIImage
 
 import UIKit
+import WWPrint
 import WWNetworking_UIImage
 
 @main
@@ -15,7 +16,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        _ = WWWebImage.initDatabase(for: .caches, expiredDays: 90)
+        _ = WWWebImage.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600)
         return true
     }
 }

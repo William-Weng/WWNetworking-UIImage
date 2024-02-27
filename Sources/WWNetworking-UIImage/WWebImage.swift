@@ -30,13 +30,13 @@ public extension WWWebImage {
     ///   - expiredDays: 圖片要清除的過期時間 (for 更新時間)
     ///   - cacheDelayTime: 圖片要更新的快取時間 (for 更新時間 / 避免一直更新)
     /// - Returns: Result<SQLite3Database.ExecuteResult, Error>
-    static func initDatabase(for directoryType: WWSQLite3Manager.FileDirectoryType = .documents, expiredDays: Int = 90, cacheDelayTime: TimeInterval = 60) -> Result<SQLite3Database.ExecuteResult, Error> {
+    static func initDatabase(for directoryType: WWSQLite3Manager.FileDirectoryType = .documents, expiredDays: Int = 90, cacheDelayTime: TimeInterval = 600) -> Result<SQLite3Database.ExecuteResult, Error> {
         
         let result = WWSQLite3Manager.shared.connent(for: directoryType, filename: Constant.databaseName)
         Constant.cacheImageFolderType = directoryType
         Constant.cacheDelayTime = cacheDelayTime
 
-        defer { removeExpiredCacheImages(expiredDays) }
+        defer { removeExpiredCacheImages(expiredDays: expiredDays) }
         
         switch result {
         case .failure(let error): return .failure(error)
@@ -44,9 +44,34 @@ public extension WWWebImage {
             
             let result = createDatabase(database, for: Constant.tableName)
             Constant.database = database
-
+            
             return .success(result)
         }
+    }
+    
+    /// 移除過期快取圖片 => updateTime
+    /// - Parameter expiredDays: 圖片要清除的過期時間
+    static func removeExpiredCacheImages(expiredDays: Int) {
+        
+        let expiredCacheImages = API.shared.searchExpiredCacheImageInformation(expiredDays: expiredDays, for: Constant.tableName)
+        
+        expiredCacheImages.compactMap { dictionary in
+            dictionary._jsonClass(for: WebImageInformation.self)
+        }.forEach { info in
+            
+            let result = removeImage(filename: info.name)
+            var isSuccess = false
+            
+            switch result {
+            case .failure(_): isSuccess = false
+            case .success(let _isSuccess): isSuccess = _isSuccess
+            }
+            
+            wwPrint("[removed: \(isSuccess)] \(info.url)")
+        }
+        
+        let isSuccess = API.shared.deleteCacheImageInformation(expiredDays: expiredDays, for: Constant.tableName)
+        wwPrint("expiredCacheImages => \(expiredCacheImages.count), delete isSuccess => \(isSuccess)")
     }
 }
 
@@ -74,28 +99,11 @@ private extension WWWebImage {
         let url = imageFolderUrl.appendingPathComponent(filename, isDirectory: false)
         
         defer {
-            let isExist = FileManager.default._fileExists(with: url)
-            wwPrint("\(filename) => \(isExist)")
+            let result = FileManager.default._fileExists(with: url)
+            wwPrint("[isExist: \(result.isExist)] \(filename)")
         }
         
         return FileManager.default._removeFile(at: url)
-    }
-    
-    /// 移除過期快取圖片 => updateTime
-    /// - Parameter expiredDays: 圖片要清除的過期時間
-    static func removeExpiredCacheImages(_ expiredDays: Int) {
-        
-        let expiredCacheImages = API.shared.searchExpiredCacheImageInformation(expiredDays: expiredDays, for: Constant.tableName)
-        
-        expiredCacheImages.compactMap { dictionary in
-            dictionary._jsonClass(for: WebImageInformation.self)
-        }.forEach { info in
-            let result = removeImage(filename: info.name)
-            wwPrint(result)
-        }
-        
-        let isSuccess = API.shared.deleteCacheImageInformation(expiredDays: expiredDays, for: Constant.tableName)
-        wwPrint("expiredCacheImages => \(expiredCacheImages.count), delete isSuccess => \(isSuccess)")
     }
 }
 

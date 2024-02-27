@@ -52,9 +52,9 @@ extension API {
             return []
         }
         
-        let condition = SQLite3Condition.Where().isCompare(key: "updateTime", type: .greaterThan, value: expiredDate)
+        let condition = SQLite3Condition.Where().isCompare(key: "updateTime", type: .greaterThan, value: "\(expiredDate)")
         let result = database.select(tableName: tableName, type: WebImageInformation.self, where: condition, orderBy: nil, limit: nil)
-                
+        
         return result.array
     }
 }
@@ -146,7 +146,7 @@ extension API {
             return false
         }
         
-        let condition = SQLite3Condition.Where().isCompare(key: "updateTime", type: .greaterThan, value: expiredDate)
+        let condition = SQLite3Condition.Where().isCompare(key: "updateTime", type: .greaterThan, value: "\(expiredDate)")
         let result = database.delete(tableName: tableName, where: condition)
         
         return result.isSussess
