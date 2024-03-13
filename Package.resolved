@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "wwnetworking",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/William-Weng/WWNetworking.git",
+      "state" : {
+        "revision" : "d0d3ec519baa25204e2813459d5e274e2bc8abf3",
+        "version" : "1.5.2"
+      }
+    },
+    {
+      "identity" : "wwprint",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/William-Weng/WWPrint.git",
+      "state" : {
+        "revision" : "8f5928f5d36624d77f8fc563fd8e31a59cfac6b6",
+        "version" : "1.3.1"
+      }
+    },
+    {
+      "identity" : "wwsqlite3manager",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/William-Weng/WWSQLite3Manager.git",
+      "state" : {
+        "revision" : "2a84d9ce8e7ac8294177a1a439064b091237c469",
+        "version" : "1.4.10"
+      }
+    }
+  ],
+  "version" : 2
+}

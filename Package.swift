@@ -12,12 +12,14 @@ let package = Package(
         .library(name: "WWNetworking-UIImage", targets: ["WWNetworking-UIImage"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/William-Weng/WWPrint.git", from: "1.3.0"),
-        .package(url: "https://github.com/William-Weng/WWSQLite3Manager.git", from: "1.4.9"),
-        .package(url: "https://github.com/William-Weng/WWNetworking.git", from: "1.5.1"),
+        .package(url: "https://github.com/William-Weng/WWPrint.git", from: "1.3.1"),
+        .package(url: "https://github.com/William-Weng/WWSQLite3Manager.git", from: "1.4.10"),
+        .package(url: "https://github.com/William-Weng/WWNetworking.git", from: "1.5.2"),
     ],
     targets: [
-        .target(name: "WWNetworking-UIImage", dependencies: ["WWPrint", "WWSQLite3Manager", "WWNetworking"]),
-        .testTarget(name: "WWNetworking-UIImageTests", dependencies: ["WWNetworking-UIImage"]),
+        .target(name: "WWNetworking-UIImage", dependencies: ["WWPrint", "WWSQLite3Manager", "WWNetworking"], resources: [.copy("Privacy")]),
+    ],
+    swiftLanguageVersions: [
+        .v5
     ]
 )
