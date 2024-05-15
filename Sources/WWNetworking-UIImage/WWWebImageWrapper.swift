@@ -1,12 +1,11 @@
 //
 //  WWWebImageWrapper.swift
-//  Example
+//  WWNetworking-UIImage
 //
-//  Created by iOS on 2023/4/12.
+//  Created by William.Weng on 2023/4/12.
 //
 
 import UIKit
-import WWPrint
 
 // MARK: - WWWebImageProtocol
 public protocol WWWebImageProtocol: UIImageView {}
@@ -31,10 +30,7 @@ open class WWWebImageWrapper<T: UIImageView> {
         self.refreahImageView()
     }
     
-    deinit {
-        NotificationCenter.default._remove(observer: self, name: .refreahImageView)
-        wwPrint("deinit => \(Self.self)")
-    }
+    deinit { NotificationCenter.default._remove(observer: self, name: .refreahImageView) }
 }
 
 // MARK: - 公開函式

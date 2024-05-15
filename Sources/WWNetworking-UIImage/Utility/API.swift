@@ -1,13 +1,12 @@
 //
 //  API.swift
-//  Example
+//  WWNetworking-UIImage
 //
-//  Created by iOS on 2023/3/14.
+//  Created by William.Weng on 2023/3/14.
 //
 
 import UIKit
 import WWSQLite3Manager
-import WWPrint
 
 // MARK: - API (單例)
 final class API: NSObject {

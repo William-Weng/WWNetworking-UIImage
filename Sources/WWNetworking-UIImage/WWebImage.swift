@@ -1,42 +1,47 @@
 //
 //  WWebImage.swift
-//  Example
+//  WWNetworking-UIImage
 //
-//  Created by iOS on 2023/3/15.
+//  Created by William.Weng on 2023/3/15.
 //
 
 import UIKit
-import WWPrint
 import WWNetworking
 import WWSQLite3Manager
 
 open class WWWebImage {
     
-    static let shared = WWWebImage()
+    public struct RemoveImageError: Error {
+        let error: Error
+        let info: WebImageInformation
+    }
+    
+    public static let shared = WWWebImage()
     
     var imageSetUrls: Set<String> = []
     
     private var isDownloading = false
-
+    private var downloadProgressBlock: ((WWNetworking.DownloadProgressInformation) -> Void)?
+    
     private init() { downloadWebImageWithNotification() }
 }
 
 // MARK: - WWNetworking (公開工具)
 public extension WWWebImage {
-    
+        
     /// [初始化資料表 / 資料庫](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
     /// - Parameters:
     ///   - directoryType: 要存放的資料夾
     ///   - expiredDays: 圖片要清除的過期時間 (for 更新時間)
     ///   - cacheDelayTime: 圖片要更新的快取時間 (for 更新時間 / 避免一直更新)
     /// - Returns: Result<SQLite3Database.ExecuteResult, Error>
-    static func initDatabase(for directoryType: WWSQLite3Manager.FileDirectoryType = .documents, expiredDays: Int = 90, cacheDelayTime: TimeInterval = 600) -> Result<SQLite3Database.ExecuteResult, Error> {
+    func initDatabase(for directoryType: WWSQLite3Manager.FileDirectoryType = .documents, expiredDays: Int = 90, cacheDelayTime: TimeInterval = 600) -> Result<SQLite3Database.ExecuteResult, Error> {
         
         let result = WWSQLite3Manager.shared.connent(for: directoryType, filename: Constant.databaseName)
         Constant.cacheImageFolderType = directoryType
         Constant.cacheDelayTime = cacheDelayTime
         
-        defer { removeExpiredCacheImages(expiredDays: expiredDays) }
+        defer { removeExpiredCacheImages(expiredDays: expiredDays, removeResult: { _ in }) }
         
         switch result {
         case .failure(let error): return .failure(error)
@@ -50,65 +55,31 @@ public extension WWWebImage {
     }
     
     /// 移除過期快取圖片 => updateTime
-    /// - Parameter expiredDays: 圖片要清除的過期時間
-    static func removeExpiredCacheImages(expiredDays: Int) {
+    /// - Parameters:
+    ///   - expiredDays: 圖片要清除的過期時間
+    ///   - removeResult: 刪除各照片的結果
+    /// - Returns: 資料庫資料是否刪除
+    func removeExpiredCacheImages(expiredDays: Int, removeResult: @escaping (Result<WebImageInformation, RemoveImageError>) -> Void) -> Bool {
         
         let expiredCacheImages = API.shared.searchExpiredCacheImageInformation(expiredDays: expiredDays, for: Constant.tableName)
         
         expiredCacheImages.compactMap { dictionary in
+            
             dictionary._jsonClass(for: WebImageInformation.self)
+            
         }.forEach { info in
             
             let result = removeImage(filename: info.name)
-            var isSuccess = false
             
             switch result {
-            case .failure(_): isSuccess = false
-            case .success(let _isSuccess): isSuccess = _isSuccess
+            case .failure(let error): removeResult(.failure((RemoveImageError(error: error, info: info))))
+            case .success(let isSuccess): if (isSuccess) { removeResult(.success(info)) }
             }
-            
-            wwPrint("[removed: \(isSuccess)] \(info.url)")
         }
         
         let isSuccess = API.shared.deleteCacheImageInformation(expiredDays: expiredDays, for: Constant.tableName)
-        wwPrint("expiredCacheImages => \(expiredCacheImages.count), delete isSuccess => \(isSuccess)")
+        return isSuccess
     }
-}
-
-// MARK: - WWNetworking (小工具)
-private extension WWWebImage {
-    
-    /// 建立資料庫
-    /// - Parameters:
-    ///   - database: SQLite3Database
-    ///   - tableName: String
-    /// - Returns: SQLite3Database.ExecuteResult
-    static func createDatabase(_ database: SQLite3Database, for tableName: String) -> SQLite3Database.ExecuteResult {
-        let result = database.create(tableName: tableName, type: WebImageInformation.self, isOverwrite: false)
-        return result
-    }
-    
-    /// 刪除快取圖片
-    /// - Parameters:
-    ///   - filename: String
-    /// - Returns: Result<Bool, Error>
-    static func removeImage(filename: String) -> Result<Bool, Error> {
-        
-        guard let imageFolderUrl = Constant.cacheImageFolder else { return .failure(Constant.MyError.notOpenURL) }
-        
-        let url = imageFolderUrl.appendingPathComponent(filename, isDirectory: false)
-        
-        defer {
-            let result = FileManager.default._fileExists(with: url)
-            wwPrint("[isExist: \(result.isExist)] \(filename)")
-        }
-        
-        return FileManager.default._removeFile(at: url)
-    }
-}
-
-// MARK: - WWNetworking (公開工具)
-public extension WWWebImage {
     
     /// 讀取存在手機的快取圖示檔
     /// - Parameter filename: String?
@@ -123,10 +94,39 @@ public extension WWWebImage {
         
         return image
     }
+    
+    /// 圖片下載進度
+    /// - Parameter block: WWNetworking.DownloadProgressInformation
+    func downloadProgress(block: @escaping (WWNetworking.DownloadProgressInformation) -> Void) {
+        downloadProgressBlock = block
+    }
 }
 
 // MARK: - WWNetworking (小工具)
 private extension WWWebImage {
+    
+    /// 建立資料庫
+    /// - Parameters:
+    ///   - database: SQLite3Database
+    ///   - tableName: String
+    /// - Returns: SQLite3Database.ExecuteResult
+    func createDatabase(_ database: SQLite3Database, for tableName: String) -> SQLite3Database.ExecuteResult {
+        let result = database.create(tableName: tableName, type: WebImageInformation.self, isOverwrite: false)
+        return result
+    }
+    
+    /// 刪除快取圖片
+    /// - Parameters:
+    ///   - filename: String
+    /// - Returns: Result<Bool, Error>
+    func removeImage(filename: String) -> Result<Bool, Error> {
+        
+        guard let imageFolderUrl = Constant.cacheImageFolder else { return .failure(Constant.MyError.notOpenURL) }
+        
+        let url = imageFolderUrl.appendingPathComponent(filename, isDirectory: false)
+        
+        return FileManager.default._removeFile(at: url)
+    }
     
     /// 下載網路圖片 => 利用Notification單張單張下載
     func downloadWebImageWithNotification() {
@@ -193,7 +193,7 @@ private extension WWWebImage {
                 let _ = API.shared.updateCacheImageInformation(id: imageInfo.id, fields: fields, for: Constant.tableName)
 
                 self.downloadImage(urlString: urlString) { progress in
-                    wwPrint(progress)
+                    WWWebImage.shared.downloadProgressBlock?(progress)
                 } completion: { result in
                     switch result {
                     case .failure(_): completion(false)
@@ -247,14 +247,14 @@ private extension WWWebImage {
         } completion: { downloadResult in
             
             switch downloadResult {
-            case .failure(let error): completion(.failure(error)); wwPrint(error)
+            case .failure(let error): completion(.failure(error))
             case .success(let info):
                 
                 let _result = self.storeImageData(info.data, filename: urlString._sha1())
 
                 switch _result {
-                case .failure(let error): wwPrint(error); completion(.failure(error))
-                case .success(let isSuccess): wwPrint("[下載完成] => \(urlString)"); completion(.success(isSuccess));
+                case .failure(let error): completion(.failure(error))
+                case .success(let isSuccess): completion(.success(isSuccess));
                 }
             }
         }
@@ -316,12 +316,6 @@ private extension WWWebImage {
         }
         
         let url = imageFolderUrl.appendingPathComponent(filename, isDirectory: false)
-        
-        defer {
-            let isExist = FileManager.default._fileExists(with: url)
-            wwPrint("\(filename) => \(isExist)")
-        }
-        
         return FileManager.default._writeData(to: url, data: data)
     }
 }

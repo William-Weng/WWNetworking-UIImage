@@ -23,6 +23,7 @@ dependencies: [
 |removeExpiredCacheImages(expiredDays:)|移除過期圖片|
 |downloadImage(with:defaultImage:)|下載圖片|
 |cacheImage(with:)|讀取快取圖片|
+|downloadProgress(block:)|圖片下載進度|
 
 ## Example
 ```swift
@@ -35,7 +36,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        _ = WWWebImage.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600)
+        _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600)
         return true
     }
 }
@@ -63,8 +64,10 @@ final class TableViewContrller: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         myTableView.delegate = self
         myTableView.dataSource = self
+        WWWebImage.shared.downloadProgress { wwPrint($0) }
     }
 }
 

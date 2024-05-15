@@ -1,16 +1,15 @@
 //
 //  Models.swift
-//  Example
+//  WWNetworking-UIImage
 //
-//  Created by iOS on 2023/3/14.
+//  Created by William.Weng on 2023/3/14.
 //
 
 import UIKit
-import WWPrint
 import WWSQLite3Manager
 
 // MARK: - [](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
-final class WebImageInformation: Codable {
+public class WebImageInformation: Codable {
     
     let id: Int                 // 編號
     let url: String             // 圖片URL
@@ -20,8 +19,6 @@ final class WebImageInformation: Codable {
     let eTag: String?           // [從Header取得的檔案Hash值](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
     let createTime: Date        // 建立時間
     let updateTime: Date        // 更新時間
-    
-    deinit { wwPrint("\(Self.self) deinit") }
 }
 
 // MARK: - SQLite3SchemeDelegate
@@ -29,7 +26,7 @@ extension WebImageInformation: SQLite3SchemeDelegate {
     
     /// SQLite資料結構 for WWSQLite3Manager
     /// - Returns: [(key: String, type: SQLite3Condition.DataType)]
-    static func structure() -> [(key: String, type: SQLite3Condition.DataType)] {
+    static public func structure() -> [(key: String, type: SQLite3Condition.DataType)] {
         
         let keyTypes: [(key: String, type: SQLite3Condition.DataType)] = [
             (key: "id", type: .INTEGER()),

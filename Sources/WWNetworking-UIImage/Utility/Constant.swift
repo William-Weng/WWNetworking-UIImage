@@ -1,6 +1,6 @@
 //
 //  Constant.swift
-//  Example
+//  WWNetworking-UIImage
 //
 //  Created by William.Weng on 2022/12/15.
 //
@@ -34,6 +34,7 @@ final class Constant: NSObject {
         case notImage
         case notInsert
         case isEmpty
+        case removeImage(_ url: URL)
         
         /// 顯示錯誤說明
         /// - Returns: String
@@ -43,6 +44,7 @@ final class Constant: NSObject {
             case .notImage: return "不是圖片檔"
             case .notInsert:  return "加入資料庫錯誤"
             case .isEmpty: return "空資料"
+            case .removeImage(_): return "刪除圖片失敗"
             }
         }
     }
