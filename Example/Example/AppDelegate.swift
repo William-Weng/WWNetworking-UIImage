@@ -16,7 +16,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        _ = WWWebImage.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600)
+        _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600)
         return true
     }
 }

@@ -12,6 +12,7 @@
 		3DBCD87B26F198EF00522E3B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DBCD87926F198EF00522E3B /* Main.storyboard */; };
 		3DBCD87D26F198F300522E3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DBCD87C26F198F300522E3B /* Assets.xcassets */; };
 		3DBCD88026F198F300522E3B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DBCD87E26F198F300522E3B /* LaunchScreen.storyboard */; };
+		810639FA2BF455DD007E7A95 /* WWPrint in Frameworks */ = {isa = PBXBuildFile; productRef = 810639F92BF455DD007E7A95 /* WWPrint */; };
 		815AF24A29F0F55A00A8CC4D /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815AF24929F0F55A00A8CC4D /* TableViewCell.swift */; };
 		819A50642B8D80E2001E4B70 /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 819A50632B8D80E2001E4B70 /* WWNetworking-UIImage */; };
 /* End PBXBuildFile section */
@@ -32,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				810639FA2BF455DD007E7A95 /* WWPrint in Frameworks */,
 				819A50642B8D80E2001E4B70 /* WWNetworking-UIImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -127,6 +129,7 @@
 			name = Example;
 			packageProductDependencies = (
 				819A50632B8D80E2001E4B70 /* WWNetworking-UIImage */,
+				810639F92BF455DD007E7A95 /* WWPrint */,
 			);
 			productName = Example;
 			productReference = 3DBCD87026F198EF00522E3B /* Example.app */;
@@ -157,6 +160,7 @@
 			mainGroup = 3DBCD86726F198EF00522E3B;
 			packageReferences = (
 				819A50622B8D80E2001E4B70 /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */,
+				810639F82BF455DD007E7A95 /* XCRemoteSwiftPackageReference "WWPrint" */,
 			);
 			productRefGroup = 3DBCD87126F198EF00522E3B /* Products */;
 			projectDirPath = "";
@@ -344,6 +348,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = idv.william.Example2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -364,6 +372,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = idv.william.Example2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -393,17 +405,30 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		810639F82BF455DD007E7A95 /* XCRemoteSwiftPackageReference "WWPrint" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/William-Weng/WWPrint.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.1;
+			};
+		};
 		819A50622B8D80E2001E4B70 /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/William-Weng/WWNetworking-UIImage.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.5;
+				branch = Main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		810639F92BF455DD007E7A95 /* WWPrint */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 810639F82BF455DD007E7A95 /* XCRemoteSwiftPackageReference "WWPrint" */;
+			productName = WWPrint;
+		};
 		819A50632B8D80E2001E4B70 /* WWNetworking-UIImage */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 819A50622B8D80E2001E4B70 /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */;

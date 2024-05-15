@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import WWPrint
 import WWNetworking_UIImage
 
 final class TableViewController: UIViewController {
@@ -37,8 +38,10 @@ final class TableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         myTableView.delegate = self
         myTableView.dataSource = self
+        WWWebImage.shared.downloadProgress { wwPrint($0) }
     }
 }
 
