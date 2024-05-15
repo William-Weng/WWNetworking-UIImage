@@ -21,7 +21,9 @@ open class WWWebImage {
     var imageSetUrls: Set<String> = []
     
     private var isDownloading = false
+    
     private var downloadProgressBlock: ((WWNetworking.DownloadProgressInformation) -> Void)?
+    private var removeExpiredCacheImagesProgressBlock: ((Result<WebImageInformation, RemoveImageError>) -> Void)?
     
     private init() { downloadWebImageWithNotification() }
 }
@@ -41,7 +43,7 @@ public extension WWWebImage {
         Constant.cacheImageFolderType = directoryType
         Constant.cacheDelayTime = cacheDelayTime
         
-        defer { removeExpiredCacheImages(expiredDays: expiredDays, removeResult: { _ in }) }
+        defer { removeExpiredCacheImages(expiredDays: expiredDays) }
         
         switch result {
         case .failure(let error): return .failure(error)
@@ -57,9 +59,8 @@ public extension WWWebImage {
     /// 移除過期快取圖片 => updateTime
     /// - Parameters:
     ///   - expiredDays: 圖片要清除的過期時間
-    ///   - removeResult: 刪除各照片的結果
     /// - Returns: 資料庫資料是否刪除
-    func removeExpiredCacheImages(expiredDays: Int, removeResult: @escaping (Result<WebImageInformation, RemoveImageError>) -> Void) -> Bool {
+    func removeExpiredCacheImages(expiredDays: Int) -> Bool {
         
         let expiredCacheImages = API.shared.searchExpiredCacheImageInformation(expiredDays: expiredDays, for: Constant.tableName)
         
@@ -72,8 +73,8 @@ public extension WWWebImage {
             let result = removeImage(filename: info.name)
             
             switch result {
-            case .failure(let error): removeResult(.failure((RemoveImageError(error: error, info: info))))
-            case .success(let isSuccess): if (isSuccess) { removeResult(.success(info)) }
+            case .failure(let error): removeExpiredCacheImagesProgressBlock?(.failure(RemoveImageError(error: error, info: info)))
+            case .success(let isSuccess): if (isSuccess) { removeExpiredCacheImagesProgressBlock?(.success(info)) }
             }
         }
         
@@ -99,6 +100,12 @@ public extension WWWebImage {
     /// - Parameter block: WWNetworking.DownloadProgressInformation
     func downloadProgress(block: @escaping (WWNetworking.DownloadProgressInformation) -> Void) {
         downloadProgressBlock = block
+    }
+    
+    /// 刪除過期圖片進度
+    /// - Parameter block: Result<WebImageInformation, RemoveImageError>
+    func removeExpiredCacheImagesProgress(block: @escaping (Result<WebImageInformation, RemoveImageError>) -> Void) {
+        removeExpiredCacheImagesProgressBlock = block
     }
 }
 
@@ -176,7 +183,7 @@ private extension WWWebImage {
         let contentLength = imageInfo.contentLength ?? 0
         
         if (updateTime > cacheDelayTime && contentLength > 0) { completion(false); return }
-                
+        
         self.imageUrlCacheHeader(urlString: urlString) { cacheResult in
             
             switch cacheResult {

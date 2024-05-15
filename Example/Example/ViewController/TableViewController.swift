@@ -41,7 +41,6 @@ final class TableViewController: UIViewController {
         
         myTableView.delegate = self
         myTableView.dataSource = self
-        WWWebImage.shared.downloadProgress { wwPrint($0) }
     }
 }
 

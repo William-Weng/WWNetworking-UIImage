@@ -12,7 +12,7 @@
 ## [Installation with Swift Package Manager](https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/使用-spm-安裝第三方套件-xcode-11-新功能-2c4ffcf85b4b)
 ```bash
 dependencies: [
-    .package(url: "https://github.com/William-Weng/WWNetworking-UIImage.git", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/William-Weng/WWNetworking-UIImage.git", .upToNextMajor(from: "1.2.10"))
 ]
 ```
 
@@ -24,6 +24,7 @@ dependencies: [
 |downloadImage(with:defaultImage:)|下載圖片|
 |cacheImage(with:)|讀取快取圖片|
 |downloadProgress(block:)|圖片下載進度|
+|removeExpiredCacheImagesProgress(block:)|刪除過期圖片進度|
 
 ## Example
 ```swift
@@ -36,7 +37,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        WWWebImage.shared.downloadProgress { wwPrint($0) }
+        WWWebImage.shared.removeExpiredCacheImagesProgress { wwPrint($0) }
         _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600)
+        
         return true
     }
 }
@@ -67,7 +72,6 @@ final class TableViewContrller: UIViewController {
         
         myTableView.delegate = self
         myTableView.dataSource = self
-        WWWebImage.shared.downloadProgress { wwPrint($0) }
     }
 }
 

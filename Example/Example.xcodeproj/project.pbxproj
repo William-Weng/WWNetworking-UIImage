@@ -417,8 +417,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/William-Weng/WWNetworking-UIImage.git";
 			requirement = {
-				branch = Main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.10;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
