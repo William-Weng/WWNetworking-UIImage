@@ -19,9 +19,9 @@ dependencies: [
 ## 可用函式
 |函式|說明|
 |-|-|
-|initDatabase(for:expiredDays:cacheDelayTime:)|初始化資料庫|
+|initDatabase(for:expiredDays:cacheDelayTime:defaultImage:)|初始化資料庫|
 |removeExpiredCacheImages(expiredDays:)|移除過期圖片|
-|downloadImage(with:defaultImage:)|下載圖片|
+|downloadImage(with:)|下載圖片|
 |cacheImage(with:)|讀取快取圖片|
 |downloadProgress(block:)|圖片下載進度|
 |removeExpiredCacheImagesProgress(block:)|刪除過期圖片進度|
@@ -40,7 +40,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         WWWebImage.shared.downloadProgress { wwPrint($0) }
         WWWebImage.shared.removeExpiredCacheImagesProgress { wwPrint($0) }
-        _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600)
+        _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600, defaultImage: UIImage(named: "no-pictures"))
         
         return true
     }
@@ -86,10 +86,8 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as? TableViewCell else { fatalError() }
         
-        let defaultImage = UIImage(named: "no-pictures")
-        
         cell.myLabel?.text = "\(indexPath.row)"
-        cell.myImageView.WW.downloadImage(with: imageUrls[indexPath.row], defaultImage: defaultImage)
+        cell.myImageView.WW.downloadImage(with: imageUrls[indexPath.row])
         
         return cell
     }

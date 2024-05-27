@@ -19,8 +19,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         WWWebImage.shared.downloadProgress { wwPrint($0) }
         WWWebImage.shared.removeExpiredCacheImagesProgress { wwPrint($0) }
-        _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600)
-        
+        _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600, defaultImage: UIImage(named: "no-pictures"))
+
         return true
     }
 }

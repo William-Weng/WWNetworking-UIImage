@@ -23,7 +23,6 @@ open class WWWebImageWrapper<T: UIImageView> {
     
     private var imageView: T
     private var urlString: String?
-    private var defaultImage: UIImage?
     
     public init(_ imageView: T) {
         self.imageView = imageView
@@ -39,13 +38,15 @@ public extension WWWebImageWrapper {
     /// 下載網路圖片
     /// - Parameters:
     ///   - urlString: 下載的圖片路徑
-    ///   - defaultImage: 本機預設圖片
-    func downloadImage(with urlString: String?, defaultImage: UIImage? = nil) {
+    func downloadImage(with urlString: String?) {
         
-        guard let urlString = urlString else { return }
+        guard let urlString = urlString,
+              !WWWebImage.shared.imageSetUrls.contains(urlString)
+        else {
+            return
+        }
         
         self.urlString = urlString
-        self.defaultImage = defaultImage
         
         WWWebImage.shared.imageSetUrls.insert(urlString)
         cacheImageSetting(urlString: urlString)
@@ -66,15 +67,15 @@ private extension WWWebImageWrapper {
         guard let urlString = urlString,
               let cacheImage = WWWebImage.shared.cacheImage(with: urlString)
         else {
-            imageView.image = defaultImage; return
+            imageView.image = WWWebImage.shared.defaultImage; return
         }
         
-        imageView.image = cacheImage 
+        imageView.image = cacheImage
     }
     
     /// 更新圖片畫面 => NotificationCenter
     func refreahImageView() {
-               
+        
         NotificationCenter.default._remove(observer: self, name: .refreahImageView)
         
         NotificationCenter.default._register(name: .refreahImageView) { notification in
