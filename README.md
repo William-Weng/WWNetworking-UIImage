@@ -25,6 +25,7 @@ dependencies: [
 |cacheImage(with:)|讀取快取圖片|
 |downloadProgress(block:)|圖片下載進度|
 |removeExpiredCacheImagesProgress(block:)|刪除過期圖片進度|
+|errorBlock(block:)|相關錯誤訊息輸出|
 
 ## Example
 ```swift

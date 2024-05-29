@@ -8,6 +8,24 @@
 import UIKit
 import CommonCrypto
 
+// MARK: - Set (function)
+extension Set {
+ 
+    /// 彈出開頭第一個
+    /// - Returns: Element?
+    mutating func _popFirst() -> Element? {
+        return popFirst()
+    }
+    
+    /// 彈出開頭的某幾個
+    /// - Parameter count: UInt
+    /// - Returns: [Element]
+    mutating func _popFirst(count: UInt) -> [Element] {
+        let elements = (0..<count).compactMap { _ in return _popFirst() }
+        return elements
+    }
+}
+
 // MARK: - DispatchQueue (function)
 extension DispatchQueue {
     

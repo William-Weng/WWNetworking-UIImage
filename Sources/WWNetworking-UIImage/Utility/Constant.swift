@@ -11,11 +11,12 @@ import WWSQLite3Manager
 // MARK: - Constant
 final class Constant: NSObject {
     
-    typealias FileInfomation = (isExist: Bool, isDirectory: Bool)                               // 檔案相關資訊 (是否存在 / 是否為資料夾)
-    typealias CacheHeaderFields = (lastModified: String?, eTag: String?, contentLength: Int?)   // 快取圖片的依據 (最後更新時間 / ETag / 檔案大小)
+    typealias FileInfomation = (isExist: Bool, isDirectory: Bool)                                           // 檔案相關資訊 (是否存在 / 是否為資料夾)
+    typealias CacheHeaderFields = (url: URL?, lastModified: String?, eTag: String?, contentLength: Int?)    // 快取圖片的依據 (URL / 最後更新時間 / ETag / 檔案大小)
     
     static let databaseName = "WWWebImage.db"
     static let tableName = "CacheImage"
+    static let maxnumDownloadCount: UInt = 5
     
     static var cacheDelayTime = 60.0
     static var cacheImageFolder = WWSQLite3Manager.FileDirectoryType.caches.url()    
