@@ -39,14 +39,17 @@ public extension WWWebImage {
     ///   - directoryType: 要存放的資料夾
     ///   - expiredDays: 圖片要清除的過期時間 (for 更新時間)
     ///   - cacheDelayTime: 圖片要更新的快取時間 (for 更新時間 / 避免一直更新)
+    ///   - maxnumDownloadCount: 最大同時下載數量
     ///   - defaultImage: 預設圖片
     /// - Returns: Result<SQLite3Database.ExecuteResult, Error>
-    func initDatabase(for directoryType: WWSQLite3Manager.FileDirectoryType = .documents, expiredDays: Int = 90, cacheDelayTime: TimeInterval = 600, defaultImage: UIImage?) -> Result<SQLite3Database.ExecuteResult, Error> {
+    func initDatabase(for directoryType: WWSQLite3Manager.FileDirectoryType = .documents, expiredDays: Int = 90, cacheDelayTime: TimeInterval = 600, maxnumDownloadCount: UInt = 5, defaultImage: UIImage?) -> Result<SQLite3Database.ExecuteResult, Error> {
         
         let result = WWSQLite3Manager.shared.connent(for: directoryType, filename: Constant.databaseName)
+        
         Constant.cacheImageFolderType = directoryType
         Constant.cacheDelayTime = cacheDelayTime
-        
+        Constant.maxnumDownloadCount = 10
+
         self.defaultImage = defaultImage
         
         defer { removeExpiredCacheImages(expiredDays: expiredDays) }

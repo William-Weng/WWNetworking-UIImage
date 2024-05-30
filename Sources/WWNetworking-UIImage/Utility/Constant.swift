@@ -16,8 +16,8 @@ final class Constant: NSObject {
     
     static let databaseName = "WWWebImage.db"
     static let tableName = "CacheImage"
-    static let maxnumDownloadCount: UInt = 5
     
+    static var maxnumDownloadCount: UInt = 10
     static var cacheDelayTime = 60.0
     static var cacheImageFolder = WWSQLite3Manager.FileDirectoryType.caches.url()    
     static var cacheImageFolderType: WWSQLite3Manager.FileDirectoryType = .caches {

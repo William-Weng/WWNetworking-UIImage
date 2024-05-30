@@ -16,11 +16,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        WWWebImage.shared.downloadProgress { wwPrint($0) }
-        WWWebImage.shared.removeExpiredCacheImagesProgress { wwPrint($0) }
-        _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600, defaultImage: UIImage(named: "no-pictures"))
-
+        _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600, maxnumDownloadCount: 10, defaultImage: UIImage(named: "no-pictures"))
         return true
     }
 }

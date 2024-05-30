@@ -40,6 +40,8 @@ public extension WWWebImageWrapper {
     ///   - urlString: 下載的圖片路徑
     func downloadImage(with urlString: String?) {
         
+        defer { cacheImageSetting(urlString: urlString) }
+        
         guard let urlString = urlString,
               !WWWebImage.shared.imageSetUrls.contains(urlString)
         else {
@@ -49,8 +51,6 @@ public extension WWWebImageWrapper {
         self.urlString = urlString
         
         WWWebImage.shared.imageSetUrls.insert(urlString)
-        cacheImageSetting(urlString: urlString)
-        
         NotificationCenter.default._post(name: .downloadWebImage, object: urlString)
     }
 }

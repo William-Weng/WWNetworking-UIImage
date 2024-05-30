@@ -12,14 +12,14 @@
 ## [Installation with Swift Package Manager](https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/使用-spm-安裝第三方套件-xcode-11-新功能-2c4ffcf85b4b)
 ```bash
 dependencies: [
-    .package(url: "https://github.com/William-Weng/WWNetworking-UIImage.git", .upToNextMajor(from: “1.3.0"))
+    .package(url: "https://github.com/William-Weng/WWNetworking-UIImage.git", .upToNextMajor(from: “1.4.1"))
 ]
 ```
 
 ## 可用函式
 |函式|說明|
 |-|-|
-|initDatabase(for:expiredDays:cacheDelayTime:defaultImage:)|初始化資料庫|
+|initDatabase(for:expiredDays:cacheDelayTime:maxnumDownloadCount:defaultImage:)|初始化資料庫|
 |removeExpiredCacheImages(expiredDays:)|移除過期圖片|
 |downloadImage(with:)|下載圖片|
 |cacheImage(with:)|讀取快取圖片|
@@ -38,11 +38,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        WWWebImage.shared.downloadProgress { wwPrint($0) }
-        WWWebImage.shared.removeExpiredCacheImagesProgress { wwPrint($0) }
-        _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600, defaultImage: UIImage(named: "no-pictures"))
-        
+        _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600, maxnumDownloadCount: 10, defaultImage: UIImage(named: "no-pictures"))
         return true
     }
 }
