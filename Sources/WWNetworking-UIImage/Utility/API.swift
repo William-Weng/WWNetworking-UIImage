@@ -31,8 +31,8 @@ extension API {
             return []
         }
         
-        let condition = SQLite3Condition.Where().isCompare(key: "name", type: .equal, value: name)
-        let orderBy = SQLite3Condition.OrderBy().item(key: "createTime", type: .ascending)
+        let condition = SQLite3Condition.Where().isCompare(type: .equal(key: "name", value: name))
+        let orderBy = SQLite3Condition.OrderBy().item(type: .ascending(key: "createTime"))
         let result = database.select(tableName: tableName, type: WebImageInformation.self, where: condition, orderBy: orderBy, limit: nil)
         
         return result.array
@@ -51,7 +51,7 @@ extension API {
             return []
         }
         
-        let condition = SQLite3Condition.Where().isCompare(key: "updateTime", type: .greaterThan, value: "\(expiredDate)")
+        let condition = SQLite3Condition.Where().isCompare(type: .greaterThan(key: "updateTime", value: "\(expiredDate)"))
         let result = database.select(tableName: tableName, type: WebImageInformation.self, where: condition, orderBy: nil, limit: nil)
         
         return result.array
@@ -103,7 +103,7 @@ extension API {
         if let contentLength = fields.contentLength { items.append((key: "contentLength", value: contentLength)) }
         items.append((key: "updateTime", value: Date()._localTime()))
 
-        let condition = SQLite3Condition.Where().isCompare(key: "id", type: .equal, value: id)
+        let condition = SQLite3Condition.Where().isCompare(type: .equal(key: "id", value: id))
         let result = database.update(tableName: tableName, items: items, where: condition)
         
         return result.isSussess
@@ -122,7 +122,7 @@ extension API {
         
         items.append((key: "updateTime", value: Date()._localTime()))
         
-        let condition = SQLite3Condition.Where().isCompare(key: "id", type: .equal, value: id)
+        let condition = SQLite3Condition.Where().isCompare(type: .equal(key: "id", value: id))
         let result = database.update(tableName: tableName, items: items, where: condition)
         
         return result.isSussess
@@ -145,7 +145,7 @@ extension API {
             return false
         }
         
-        let condition = SQLite3Condition.Where().isCompare(key: "updateTime", type: .greaterThan, value: "\(expiredDate)")
+        let condition = SQLite3Condition.Where().isCompare(type: .greaterThan(key: "updateTime", value: "\(expiredDate)"))
         let result = database.delete(tableName: tableName, where: condition)
         
         return result.isSussess
