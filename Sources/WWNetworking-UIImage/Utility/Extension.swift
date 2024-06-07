@@ -379,3 +379,26 @@ extension HTTPURLResponse {
         return headerFields
     }
 }
+
+// MARK: - UIImage (function)
+extension UIImage {
+    
+    /// [建立縮圖](https://stackoverflow.com/questions/40675640/creating-a-thumbnail-from-uiimage-using-cgimagesourcecreatethumbnailatindex)
+    /// - Parameter pixelSize: 最大的像素大小 => 解析度
+    /// - Returns: UIImage?
+    func _thumbnail(max pixelSize: Int = 300) -> UIImage? {
+
+        guard let imageData = self.pngData() else { return nil }
+        
+        let options: [CFString : Any] = [
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceThumbnailMaxPixelSize: pixelSize
+        ]
+        
+        guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else { return nil }
+        guard let imageReference = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
+        
+        return UIImage(cgImage: imageReference)
+    }
+}

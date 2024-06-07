@@ -54,7 +54,7 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as? TableViewCell else { fatalError() }
-                
+        
         cell.myLabel?.text = "\(indexPath.row + 1)"
         cell.myImageView.WW.downloadImage(with: imageUrls[indexPath.row])
         

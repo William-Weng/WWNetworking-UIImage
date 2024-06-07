@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/William-Weng/WWNetworking-UIImage.git",
       "state" : {
-        "revision" : "c57a2b8d896cdab60737db8dd2d1b369b58463c2",
-        "version" : "1.4.0"
+        "revision" : "fc70803ff68abd4c1c4f66bc01421684389b9ea1",
+        "version" : "1.4.2"
       }
     },
     {
