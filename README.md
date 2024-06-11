@@ -22,6 +22,7 @@ dependencies: [
 |initDatabase(for:expiredDays:cacheDelayTime:maxnumDownloadCount:defaultImage:)|初始化資料庫|
 |removeExpiredCacheImages(expiredDays:)|移除過期圖片|
 |downloadImage(with:pixelSize:)|下載圖片 + 設定最大像素|
+|cacheImageData(with:)|讀取快取圖片資料|
 |cacheImage(with:)|讀取快取圖片|
 |downloadProgress(block:)|圖片下載進度|
 |removeExpiredCacheImagesProgress(block:)|刪除過期圖片進度|

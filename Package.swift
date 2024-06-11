@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "WWNetworking-UIImage", targets: ["WWNetworking-UIImage"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/William-Weng/WWSQLite3Manager.git", from: "1.4.10"),
+        .package(url: "https://github.com/William-Weng/WWSQLite3Manager.git", from: "1.5.0"),
         .package(url: "https://github.com/William-Weng/WWNetworking.git", from: "1.5.5"),
     ],
     targets: [

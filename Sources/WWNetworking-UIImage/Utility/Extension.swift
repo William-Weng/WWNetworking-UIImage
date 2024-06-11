@@ -181,6 +181,37 @@ extension Data {
         
         return try? decoder.decode(type.self, from: self)
     }
+    
+    /// 根據ImageHeader找出相對應的圖片Type (jpeg / png / gif)
+    /// - 一個一個試，找到就結束 => 二進位型圖片
+    /// - Parameter data: 圖片資料
+    /// - Returns: Constant.ImageFormat?
+    func _imageDataFormat() -> Constant.ImageFormat? {
+        
+        let imageDataArray = lazy.map({$0})
+        let allCases = Constant.ImageFormat.allCases
+        
+        var imageType: Constant.ImageFormat? = nil
+        
+        allCases.forEach { (type) in
+            
+            let imageHeader = type.header
+            
+            if (imageDataArray.count < imageHeader.count) { imageType = nil; return }
+            if (imageType != nil) { return }
+            
+            for index in 0..<imageHeader.count {
+                
+                let headerHexNumber = imageHeader[index]
+
+                if (headerHexNumber == 0x00) { continue }
+                if (imageDataArray[index] != headerHexNumber) { imageType = nil; return }
+                imageType = type
+            }
+        }
+        
+        return imageType
+    }
 }
 
 // MARK: - Date (function)
@@ -291,6 +322,21 @@ extension FileManager {
     /// - Returns: URL
     func _temporaryDirectory() -> URL { return self.temporaryDirectory }
     
+    /// 讀取檔案
+    /// - Parameter url: 要讀取的檔案位置
+    /// - Returns: Data?
+    func _readData(from url: URL?) -> Result<Data?, Error> {
+        
+        guard let url = url else { return .success(nil) }
+        
+        do {
+            let data = try Data(contentsOf: url)
+            return .success(data)
+        } catch {
+            return .failure(error)
+        }
+    }
+    
     /// 寫入Data - 二進制資料
     /// - Parameters:
     ///   - url: 寫入Data的文件URL
@@ -400,5 +446,27 @@ extension UIImage {
         guard let imageReference = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
         
         return UIImage(cgImage: imageReference)
+    }
+}
+
+// MARK: - UIImageView (function)
+extension UIImageView {
+    
+    /// [播放GIF圖片](https://augmentedcode.io/2019/09/01/animating-gifs-and-apngs-with-cganimateimageaturlwithblock-in-swift/)
+    /// - Parameters:
+    ///   - data: [Data](https://developer.apple.com/documentation/imageio/3333272-cganimateimagedatawithblock)
+    ///   - options: CFDictionary?
+    ///   - result: Result<Bool, Error>
+    /// - Returns: [OSStatus?](https://www.osstatus.com/)
+    func _GIF(data: Data, options: CFDictionary? = nil, result: @escaping ((Result<Constant.GIFImageInformation, Error>) -> Void)) -> OSStatus {
+        
+        let cfData = data as CFData
+        
+        let status = CGAnimateImageDataWithBlock(cfData, options) { (index, cgImage, pointer) in
+            self.image = UIImage(cgImage: cgImage)
+            result(.success((index, cgImage, pointer)))
+        }
+        
+        return status
     }
 }

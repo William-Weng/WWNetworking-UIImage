@@ -150,5 +150,20 @@ extension API {
         
         return result.isSussess
     }
+    
+    /// 刪除指定URL圖片
+    /// - Parameters:
+    ///   - urlString: String
+    ///   - tableName: String
+    /// - Returns: Bool
+    func deleteCacheImageInformation(urlString: String, for tableName: String) -> Bool {
+        
+        guard let database = Constant.database else { return false }
+        
+        let condition = SQLite3Condition.Where().isCompare(type: .greaterThan(key: "url", value: urlString))
+        let result = database.delete(tableName: tableName, where: condition)
+        
+        return result.isSussess
+    }
 }
 

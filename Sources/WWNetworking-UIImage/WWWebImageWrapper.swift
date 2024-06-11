@@ -21,16 +21,25 @@ extension UIImageView: WWWebImageProtocol {}
 // MARK: - WWWebImageWrapper
 open class WWWebImageWrapper<T: UIImageView> {
     
+    private let gifImageViewTag = 3939889
+    
     private var imageView: T
     private var urlString: String?
     private var pixelSize: Int?
     
+    private var gifImageView: UIImageView?
+    private var gifImageInformation: Constant.GIFImageInformation?
+    private var gifImageAnimationBlock: ((Data) -> Void)?
+
     public init(_ imageView: T) {
         self.imageView = imageView
         self.refreahImageView()
     }
     
-    deinit { NotificationCenter.default._remove(observer: self, name: .refreahImageView) }
+    deinit {
+        clearGifSetting()
+        NotificationCenter.default._remove(observer: self, name: .refreahImageView)
+    }
 }
 
 // MARK: - 公開函式
@@ -68,15 +77,48 @@ private extension WWWebImageWrapper {
         
         defer { imageView.setNeedsDisplay() }
         
+        clearGifSetting()
+        
         guard let urlString = urlString,
-              let cacheImage = WWWebImage.shared.cacheImage(with: urlString)
+              let cacheImageData = WWWebImage.shared.cacheImageData(with: urlString),
+              let imageType = cacheImageData._imageDataFormat()
         else {
-            if let pixelSize = self.pixelSize { imageView.image = WWWebImage.shared.defaultImage?._thumbnail(max: pixelSize); return }
-            imageView.image = WWWebImage.shared.defaultImage; return
+            imageView.image = parseCacheImage(with: WWWebImage.shared.defaultImage, pixelSize: pixelSize); return
         }
         
-        if let pixelSize = self.pixelSize { imageView.image = cacheImage._thumbnail(max: pixelSize); return }
-        imageView.image = cacheImage
+        switch imageType {
+        case .png, .jpeg, .webp, .bmp, .heic, .avif, .pdf: imageView.image = parseCacheImage(with: UIImage(data: cacheImageData), pixelSize: pixelSize)
+        case .gif: cacheGifImageDataSetting(cacheImageData, frame: imageView.frame)
+        case .svg: break
+        }
+    }
+    
+    /// 處理Gif圖片的相關處理 (加上一個ImageView單獨處理)
+    /// - Parameters:
+    ///   - cacheImageData: Data
+    ///   - frame: CGRect
+    func cacheGifImageDataSetting(_ cacheImageData: Data, frame: CGRect) {
+        
+        gifImageView = UIImageView(frame: frame)
+        gifImageView?.contentMode = .scaleAspectFit
+        gifImageView?.tag = gifImageViewTag
+        
+        gifImageAnimationBlock = { [weak self] data in
+            
+            _ = self?.gifImageView?._GIF(data: data) { result in
+                
+                switch result {
+                case .failure(let error): print(error)
+                case .success(let info): self?.gifImageInformation = info
+                }
+            }
+        }
+        
+        if let gifImageView = gifImageView {
+            imageView.image = nil
+            imageView.addSubview(gifImageView)
+            gifImageAnimationBlock?(cacheImageData)
+        }
     }
     
     /// 更新圖片畫面 => NotificationCenter
@@ -91,5 +133,27 @@ private extension WWWebImageWrapper {
             NotificationCenter.default._post(name: .downloadWebImage, object: urlString)
             DispatchQueue.main.safeAsync { self.cacheImageSetting(urlString: urlString) }
         }
+    }
+    
+    /// 解析快取圖片 (要不要縮圖)
+    /// - Parameters:
+    ///   - image: UIImage?
+    ///   - pixelSize: Int?
+    /// - Returns: UIImage?
+    func parseCacheImage(with image: UIImage?, pixelSize: Int?) -> UIImage? {
+        
+        if let pixelSize = self.pixelSize { return image?._thumbnail(max: pixelSize) }
+        return image
+    }
+    
+    /// 清除GIF的相關設定
+    func clearGifSetting() {
+        
+        if let _gifView = imageView.viewWithTag(gifImageViewTag) { _gifView.removeFromSuperview() }
+        
+        gifImageInformation?.pointer.pointee = true
+        gifImageAnimationBlock = nil
+        gifImageView?.removeFromSuperview()
+        gifImageView = nil
     }
 }

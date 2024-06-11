@@ -90,18 +90,30 @@ public extension WWWebImage {
         let isSuccess = API.shared.deleteCacheImageInformation(expiredDays: expiredDays, for: Constant.tableName)
         return isSuccess
     }
+        
+    /// 讀取存在手機的快取圖示檔Data
+    /// - Parameter urlString: String
+    /// - Returns: Data?
+    func cacheImageData(with urlString: String) -> Data? {
+        
+        guard let url = cacheImageURL(with: urlString) else { errorBlock?(Constant.MyError.isEmpty); return nil }
+        
+        let result = FileManager.default._readData(from: url)
+        
+        switch result {
+        case .success(let data): return data
+        case .failure(let error): errorBlock?(error); return nil
+        }
+    }
     
     /// 讀取存在手機的快取圖示檔
-    /// - Parameter filename: String?
+    /// - Parameter urlString: String?
     /// - Returns: UIImage?
     func cacheImage(with urlString: String) -> UIImage? {
         
-        guard let imageFolderUrl = Constant.cacheImageFolder else { return nil }
+        guard let data = cacheImageData(with: urlString) else { return nil }
         
-        let filename = urlString._sha1()
-        let path = imageFolderUrl.appendingPathComponent(filename, isDirectory: false).path
-        let image = UIImage(contentsOfFile: path)
-        
+        let image = UIImage(data: data)
         return image
     }
     
@@ -148,6 +160,19 @@ private extension WWWebImage {
         let url = imageFolderUrl.appendingPathComponent(filename, isDirectory: false)
         
         return FileManager.default._removeFile(at: url)
+    }
+    
+    /// 讀取存在手機的快取圖示檔路徑
+    /// - Parameter urlString: String?
+    /// - Returns: String?
+    func cacheImageURL(with urlString: String) -> URL? {
+        
+        guard let imageFolderUrl = Constant.cacheImageFolder else { return nil }
+        
+        let filename = urlString._sha1()
+        let url = imageFolderUrl.appendingPathComponent(filename, isDirectory: false)
+        
+        return url
     }
     
     /// 下載網路圖片 => 利用Notification多個同時下載
@@ -352,116 +377,17 @@ private extension WWWebImage {
             switch result {
             case .failure(let error): self.errorBlock?(error)
             case .success(let info):
-                let _result = self.storeImageData(info.data, filename: info.urlString._sha1())
-                NotificationCenter.default._post(name: .refreahImageView, object: info.urlString)
-            }
-        }
-    }
-}
-
-/*
-// FIXME: - Remove (舊的單點下載方式)
-private extension WWWebImage {
-    
-    /// 下載網路圖片 => 利用Notification單張單張下載
-    func downloadWebImageWithNotification() {
-        
-        NotificationCenter.default._register(name: .downloadWebImage) { [weak self] _ in
-            
-            guard let this = self,
-                  !this.isDownloading,
-                  let urlString = this.imageSetUrls.popFirst()
-            else {
-                return
-            }
-            
-            this.isDownloading = true
-            
-            this.downloadImage(with: urlString) { isSuccess in
                 
-                this.isDownloading = false
+                let result = self.storeImageData(info.data, filename: info.urlString._sha1())
                 
-                if (isSuccess) { NotificationCenter.default._post(name: .refreahImageView, object: urlString) }
-                NotificationCenter.default._post(name: .downloadWebImage)
-            }
-        }
-    }
-    
-    /// [下載網路圖片](https://www.appcoda.com.tw/ios-concurrency/)
-    /// - Parameter urlString: String
-    func downloadImage(with urlString: String, completion: @escaping (Bool) -> Void) {
-        let _ = API.shared.insertCacheImageUrl(urlString, for: Constant.tableName)
-        self.downloadImageAction(with: urlString) { isSuccess in completion(isSuccess) }
-    }
-    
-    
-    /// 下載圖片功能 (會避免一直更新)
-    /// - Parameters:
-    ///   - urlString: String
-    ///   - completion: (Bool) -> Void
-    func downloadImageAction(with urlString: String, completion: @escaping (Bool) -> Void) {
-        
-        guard let imageInfo = API.shared.searchCacheImageInformation(urlString, for: Constant.tableName).first?._jsonClass(for: WebImageInformation.self) else { completion(false); return }
-        
-        let cacheDelayTime = Date().timeIntervalSince1970 - Constant.cacheDelayTime
-        let updateTime = imageInfo.updateTime.timeIntervalSince1970
-        let contentLength = imageInfo.contentLength ?? 0
-        
-        if (updateTime > cacheDelayTime && contentLength > 0) { completion(false); return }
-        
-        self.imageUrlCacheHeader(urlString: urlString) { cacheResult in
-            
-            switch cacheResult {
-            case .failure(_): completion(false)
-            case .success(let fields):
-                
-                let isNeededUpdate = self.updateImageRule(fields: fields)
-                
-                if (!isNeededUpdate) {
-                    let _ = API.shared.updateCacheImageUpdateTime(id: imageInfo.id, for: Constant.tableName)
-                    completion(false); return
-                }
-                
-                let _ = API.shared.updateCacheImageInformation(id: imageInfo.id, fields: fields, for: Constant.tableName)
-                
-                self.downloadImage(urlString: urlString) { progress in
-                    WWWebImage.shared.downloadProgressBlock?(progress)
-                } completion: { result in
-                    switch result {
-                    case .failure(_): completion(false)
-                    case .success(let isSuccess): completion(isSuccess)
-                    }
-                }
-            }
-        }
-    }
-    
-    /// 下載網路圖片
-    /// - Parameters:
-    ///   - urlString: 圖片網址
-    ///   - progress: 下載進度資訊
-    ///   - completion: Result<Bool, Error>
-    func downloadImage(urlString: String?, progress: @escaping (WWNetworking.DownloadProgressInformation) -> Void, completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        
-        guard let urlString = urlString else { completion(.failure(Constant.MyError.notOpenURL)); return }
-        
-        _ = WWNetworking.build().download(urlString: urlString, delegateQueue: nil) { info in
-            progress(info)
-            
-        } completion: { downloadResult in
-            
-            switch downloadResult {
-            case .failure(let error): completion(.failure(error))
-            case .success(let info):
-                
-                let _result = self.storeImageData(info.data, filename: info.urlString._sha1())
-                
-                switch _result {
-                case .failure(let error): completion(.failure(error))
-                case .success(let isSuccess): completion(.success(isSuccess));
+                switch result {
+                case .failure(let error):
+                    API.shared.deleteCacheImageInformation(urlString: info.urlString, for: Constant.tableName)
+                    self.errorBlock?(error)
+                case .success(_):
+                    NotificationCenter.default._post(name: .refreahImageView, object: info.urlString)
                 }
             }
         }
     }
 }
-*/
