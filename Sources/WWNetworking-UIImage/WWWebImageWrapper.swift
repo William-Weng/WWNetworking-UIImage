@@ -78,7 +78,7 @@ private extension WWWebImageWrapper {
         defer { imageView.setNeedsDisplay() }
         
         clearGifSetting()
-        
+                
         guard let urlString = urlString,
               let cacheImageData = WWWebImage.shared.cacheImageData(with: urlString),
               let imageType = cacheImageData._imageDataFormat()
@@ -87,9 +87,8 @@ private extension WWWebImageWrapper {
         }
         
         switch imageType {
-        case .png, .jpeg, .webp, .bmp, .heic, .avif, .pdf: imageView.image = parseCacheImage(with: UIImage(data: cacheImageData), pixelSize: pixelSize)
         case .gif: cacheGifImageDataSetting(cacheImageData, frame: imageView.frame)
-        case .svg: break
+        default: imageView.image = parseCacheImage(with: UIImage(data: cacheImageData), pixelSize: pixelSize)
         }
     }
     

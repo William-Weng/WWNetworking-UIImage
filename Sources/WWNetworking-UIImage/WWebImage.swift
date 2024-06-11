@@ -155,9 +155,11 @@ private extension WWWebImage {
     /// - Returns: Result<Bool, Error>
     func removeImage(filename: String) -> Result<Bool, Error> {
         
-        guard let imageFolderUrl = Constant.cacheImageFolder else { return .failure(Constant.MyError.notOpenURL) }
-        
-        let url = imageFolderUrl.appendingPathComponent(filename, isDirectory: false)
+        guard let imageFolderUrl = Constant.cacheImageFolder,
+              let url = Optional.some(imageFolderUrl.appendingPathComponent(filename, isDirectory: false))
+        else {
+            return .failure(Constant.MyError.notOpenURL)
+        }
         
         return FileManager.default._removeFile(at: url)
     }
