@@ -9,6 +9,7 @@ import UIKit
 import WWNetworking
 import WWSQLite3Manager
 
+// MARK: - WWWebImage
 open class WWWebImage {
     
     public struct RemoveImageError: Error {
@@ -194,8 +195,8 @@ private extension WWWebImage {
                         
             Task {
                 
-                let infos = this.requestInformationsMaker(with: urlStrings)
-                let results = await WWNetworking.shared.multipleRequest(with: infos)
+                let types = this.requestInformationTypesMaker(with: urlStrings)
+                let results = await WWNetworking.shared.multipleRequest(types: types)
                 
                 var updateUrls: [URL] = []
                 
@@ -323,20 +324,20 @@ private extension WWWebImage {
         return FileManager.default._writeData(to: url, data: data)
     }
     
-    /// 產生[WWNetworking.RequestInformation]
+    /// 產生[WWNetworking.RequestInformationType]
     /// - Parameter urlStrings: [String]
-    /// - Returns: [WWNetworking.RequestInformation]
-    func requestInformationsMaker(with urlStrings: [String]) -> [WWNetworking.RequestInformation] {
+    /// - Returns: [WWNetworking.RequestInformationType]
+    func requestInformationTypesMaker(with urlStrings: [String]) -> [WWNetworking.RequestInformationType] {
         
-        let infos = urlStrings.map { urlString in
+        let types = urlStrings.map { urlString in
             
             let _ = API.shared.insertCacheImageUrl(urlString, for: Constant.tableName)
-            let info: WWNetworking.RequestInformation = (httpMethod: .HEAD, urlString: urlString, contentType: .json, paramaters: nil, headers: nil, httpBody: nil)
+            let type: WWNetworking.RequestInformationType = (httpMethod: .HEAD, urlString: urlString, contentType: .json, paramaters: nil, headers: nil, httpBodyType: nil)
             
-            return info
+            return type
         }
 
-        return infos
+        return types
     }
     
     /// 處理要需要更新的URL + 相關動作
