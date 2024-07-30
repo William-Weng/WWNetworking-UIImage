@@ -53,7 +53,7 @@ public extension WWWebImage {
 
         self.defaultImage = defaultImage
         
-        defer { removeExpiredCacheImages(expiredDays: expiredDays) }
+        defer { _ = removeExpiredCacheImages(expiredDays: expiredDays) }
         
         switch result {
         case .failure(let error): return .failure(error)
@@ -371,7 +371,7 @@ private extension WWWebImage {
         
         let updateUrlStrings = urls.map { $0.absoluteString }
         
-        WWNetworking.shared.multipleDownload(urlStrings: updateUrlStrings) { progress in
+        WWNetworking.shared.multipleDownload(urlStrings: updateUrlStrings, delegateQueue: .current) { progress in
             
             WWWebImage.shared.downloadProgressBlock?(progress)
             
