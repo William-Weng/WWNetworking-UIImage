@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "wwcachemanager",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/William-Weng/WWCacheManager.git",
+      "state" : {
+        "revision" : "34d65216cf3b036a820b91f1070134227edb19a2",
+        "version" : "1.0.1"
+      }
+    },
+    {
       "identity" : "wwnetworking",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/William-Weng/WWNetworking.git",
@@ -14,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/William-Weng/WWNetworking-UIImage",
       "state" : {
-        "revision" : "63344d1ff42707425c4ec0d6b3a69562930f2d7b",
-        "version" : "1.6.3"
+        "revision" : "68ec6b6f1686756fffc3e7e6ab9e2c913c2acbd6",
+        "version" : "1.7.0"
       }
     },
     {
