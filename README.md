@@ -20,7 +20,7 @@ dependencies: [
 |函式|說明|
 |-|-|
 |initDatabase(for:expiredDays:cacheDelayTime:maxnumDownloadCount:defaultImage:)|初始化資料庫|
-|removeExpiredCacheImages(expiredDays:)|移除過期圖片|
+|removeExpiredCacheImages(expiredDays:)|移除過期快取圖片 (SQLite)|
 |downloadImage(with:pixelSize:)|下載圖片 + 設定最大像素|
 |cacheImageData(with:)|讀取快取圖片資料|
 |cacheImage(with:)|讀取快取圖片|

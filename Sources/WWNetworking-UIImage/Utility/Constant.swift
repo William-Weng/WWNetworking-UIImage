@@ -9,7 +9,7 @@ import UIKit
 import WWSQLite3Manager
 
 // MARK: - Constant
-final class Constant: NSObject {
+open class Constant: NSObject {
     
     typealias FileInfomation = (isExist: Bool, isDirectory: Bool)                                           // 檔案相關資訊 (是否存在 / 是否為資料夾)
     typealias CacheHeaderFields = (url: URL?, lastModified: String?, eTag: String?, contentLength: Int?)    // 快取圖片的依據 (URL / 最後更新時間 / ETag / 檔案大小)
@@ -18,14 +18,19 @@ final class Constant: NSObject {
     static let databaseName = "WWWebImage.db"
     static let tableName = "CacheImage"
     
+    static var cacheType: Constant.CacheType = .cache
     static var maxnumDownloadCount: UInt = 10
     static var cacheDelayTime = 60.0
     static var cacheImageFolder = WWSQLite3Manager.FileDirectoryType.caches.url()    
-    static var cacheImageFolderType: WWSQLite3Manager.FileDirectoryType = .caches {
-        willSet { Self.cacheImageFolder = newValue.url() }
-    }
+    static var cacheImageFolderType: WWSQLite3Manager.FileDirectoryType = .caches { willSet { Self.cacheImageFolder = newValue.url() }}
     
     static var database: SQLite3Database?
+    
+    // MARK: - 快取類型 (SQLite / NSCache)
+    public enum CacheType {
+        case sqlite(_ folder: WWSQLite3Manager.FileDirectoryType, _ expiredDays: Int, _ cacheDelayTime: TimeInterval)
+        case cache
+    }
     
     // MARK: - 自定義錯誤
     enum MyError: Error, LocalizedError {

@@ -48,7 +48,7 @@ public extension WWWebImageWrapper {
     /// 下載網路圖片
     /// - Parameters:
     ///   - urlString: 下載的圖片路徑
-    ///   - pixelSize: [最大像素](https://zh.wikipedia.org/zh-tw/像素 )
+    ///   - pixelSize: [最大像素](https://zh.wikipedia.org/zh-tw/像素)
     func downloadImage(with urlString: String?, pixelSize: Int? = nil) {
         
         self.pixelSize = pixelSize
@@ -78,7 +78,7 @@ private extension WWWebImageWrapper {
         defer { imageView.setNeedsDisplay() }
         
         clearGifSetting()
-                
+        
         guard let urlString = urlString,
               let cacheImageData = WWWebImage.shared.cacheImageData(with: urlString),
               let imageType = cacheImageData._imageDataFormat()

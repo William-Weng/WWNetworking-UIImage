@@ -13,10 +13,11 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/William-Weng/WWSQLite3Manager.git", from: "1.5.0"),
-        .package(url: "https://github.com/William-Weng/WWNetworking.git", from: "1.5.5"),
+        .package(url: "https://github.com/William-Weng/WWNetworking.git", from: "1.6.2"),
+        .package(url: "https://github.com/William-Weng/WWCacheManager.git", from: "1.0.1"),
     ],
     targets: [
-        .target(name: "WWNetworking-UIImage", dependencies: ["WWSQLite3Manager", "WWNetworking"], resources: [.copy("Privacy")]),
+        .target(name: "WWNetworking-UIImage", dependencies: ["WWSQLite3Manager", "WWNetworking", "WWCacheManager"], resources: [.copy("Privacy")]),
     ],
     swiftLanguageVersions: [
         .v5

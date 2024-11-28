@@ -8,6 +8,7 @@
 import UIKit
 import WWNetworking
 import WWSQLite3Manager
+import WWCacheManager
 
 // MARK: - WWWebImage
 open class WWWebImage {
@@ -17,12 +18,14 @@ open class WWWebImage {
         let info: WebImageInformation
     }
     
-    public static let shared = WWWebImage()
+    static public let shared = WWWebImage()
     
     private(set) var defaultImage: UIImage?
     
     var imageSetUrls: Set<String> = []
-        
+    
+    private let cacheManager = WWCacheManager<NSString, NSData>.build()
+    
     private var isDownloading = false
     
     private var downloadProgressBlock: ((WWNetworking.DownloadProgressInformation) -> Void)?
@@ -34,39 +37,31 @@ open class WWWebImage {
 
 // MARK: - WWNetworking (公開工具)
 public extension WWWebImage {
-        
-    /// [初始化資料表 / 資料庫](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
+    
+    /// [初始化快取 - SQLite / NSCache](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
     /// - Parameters:
-    ///   - directoryType: 要存放的資料夾
-    ///   - expiredDays: 圖片要清除的過期時間 (for 更新時間)
-    ///   - cacheDelayTime: 圖片要更新的快取時間 (for 更新時間 / 避免一直更新)
+    ///   - cacheType: 快取類型 (SQLite / NSCache)
     ///   - maxnumDownloadCount: 最大同時下載數量
     ///   - defaultImage: 預設圖片
-    /// - Returns: Result<SQLite3Database.ExecuteResult, Error>
-    func initDatabase(for directoryType: WWSQLite3Manager.FileDirectoryType = .documents, expiredDays: Int = 90, cacheDelayTime: TimeInterval = 600, maxnumDownloadCount: UInt = 5, defaultImage: UIImage?) -> Result<SQLite3Database.ExecuteResult, Error> {
+    /// - Returns: Error?
+    func initCacheType(_ cacheType: Constant.CacheType = .sqlite(.documents, 90, 600), maxnumDownloadCount: UInt = 5, defaultImage: UIImage?) -> Error? {
         
-        let result = WWSQLite3Manager.shared.connent(for: directoryType, filename: Constant.databaseName)
-        
-        Constant.cacheImageFolderType = directoryType
-        Constant.cacheDelayTime = cacheDelayTime
+        Constant.cacheType = cacheType
         Constant.maxnumDownloadCount = 10
-
         self.defaultImage = defaultImage
         
-        defer { _ = removeExpiredCacheImages(expiredDays: expiredDays) }
-        
-        switch result {
-        case .failure(let error): return .failure(error)
-        case .success(let database):
-            
-            let result = createDatabase(database, for: Constant.tableName)
-            Constant.database = database
-                        
-            return .success(result)
+        switch cacheType {
+        case .cache: return nil
+        case .sqlite(let folder, let expiredDays, let cacheDelayTime):
+            let result = initDatabase(for: folder, expiredDays: expiredDays, cacheDelayTime: cacheDelayTime)
+            switch result {
+            case .success(let success): return nil
+            case .failure(let error): return error
+            }
         }
     }
     
-    /// 移除過期快取圖片 => updateTime
+    /// 移除過期快取圖片 (SQLite) => updateTime
     /// - Parameters:
     ///   - expiredDays: 圖片要清除的過期時間
     /// - Returns: 資料庫資料是否刪除
@@ -91,19 +86,15 @@ public extension WWWebImage {
         let isSuccess = API.shared.deleteCacheImageInformation(expiredDays: expiredDays, for: Constant.tableName)
         return isSuccess
     }
-        
+    
     /// 讀取存在手機的快取圖示檔Data
     /// - Parameter urlString: String
     /// - Returns: Data?
     func cacheImageData(with urlString: String) -> Data? {
         
-        guard let url = cacheImageURL(with: urlString) else { errorBlock?(Constant.MyError.isEmpty); return nil }
-        
-        let result = FileManager.default._readData(from: url)
-        
-        switch result {
-        case .success(let data): return data
-        case .failure(let error): errorBlock?(error); return nil
+        switch Constant.cacheType {
+        case .sqlite(_, _, _): return cacheImageDataWithDatabase(urlString: urlString)
+        case .cache: return cacheImageDataWithCache(urlString: urlString)
         }
     }
     
@@ -140,6 +131,32 @@ public extension WWWebImage {
 // MARK: - WWNetworking (小工具)
 private extension WWWebImage {
     
+    /// [初始化資料表 / 資料庫](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
+    /// - Parameters:
+    ///   - directoryType: 要存放的資料夾
+    ///   - expiredDays: 圖片要清除的過期時間 (for 更新時間)
+    ///   - cacheDelayTime: 圖片要更新的快取時間 (for 更新時間 / 避免一直更新)
+    /// - Returns: Result<SQLite3Database.ExecuteResult, Error>
+    func initDatabase(for directoryType: WWSQLite3Manager.FileDirectoryType, expiredDays: Int, cacheDelayTime: TimeInterval) -> Result<SQLite3Database.ExecuteResult, Error> {
+        
+        let result = WWSQLite3Manager.shared.connent(for: directoryType, filename: Constant.databaseName)
+        
+        Constant.cacheImageFolderType = directoryType
+        Constant.cacheDelayTime = cacheDelayTime
+        
+        defer { _ = removeExpiredCacheImages(expiredDays: expiredDays) }
+        
+        switch result {
+        case .failure(let error): return .failure(error)
+        case .success(let database):
+            
+            let result = createDatabase(database, for: Constant.tableName)
+            Constant.database = database
+                        
+            return .success(result)
+        }
+    }
+    
     /// 建立資料庫
     /// - Parameters:
     ///   - database: SQLite3Database
@@ -148,6 +165,19 @@ private extension WWWebImage {
     func createDatabase(_ database: SQLite3Database, for tableName: String) -> SQLite3Database.ExecuteResult {
         let result = database.create(tableName: tableName, type: WebImageInformation.self, isOverwrite: false)
         return result
+    }
+    
+    /// 儲存快取圖片 (SQLite / NSCache)
+    /// - Parameters:
+    ///   - data: Data?
+    ///   - filename: String
+    /// - Returns: Result<Bool, Error>
+    func storeImageData(_ data: Data?, filename: String) -> Result<Bool, Error> {
+        
+        switch Constant.cacheType {
+        case .sqlite(_, _, _): return storeImageDataWithDatabase(data, filename: filename)
+        case .cache: return storeImageDataWithCache(data, filename: filename)
+        }
     }
     
     /// 刪除快取圖片
@@ -192,28 +222,10 @@ private extension WWWebImage {
             }
             
             this.isDownloading = true
-                        
-            Task {
-                
-                let types = this.requestInformationTypesMaker(with: urlStrings)
-                let results = await WWNetworking.shared.multipleRequest(types: types)
-                
-                var updateUrls: [URL] = []
-                
-                results.forEach { _result in
-                    
-                    let result = this.parseHeaderResult(_result)
-                    
-                    switch result {
-                    case .failure(let error): this.errorBlock?(error)
-                    case .success(let fields): if let url = this.updateUrlActionURL(with: fields) { updateUrls.append(url) }
-                    }
-                }
-                
-                this.downloadImagesAction(with: updateUrls)
-                this.isDownloading = false
-                
-                NotificationCenter.default._post(name: .downloadWebImage)
+            
+            switch Constant.cacheType {
+            case .cache: this.downloadWebImageWithCache(urlStrings: urlStrings)
+            case .sqlite(_, _, _): Task { await this.downloadWebImageWithDatabase(urlStrings: urlStrings) }
             }
         }
     }
@@ -307,21 +319,99 @@ private extension WWWebImage {
 // MARK: - 小工具
 private extension WWWebImage {
     
-    /// 儲存快取圖片
+    /// 儲存快取圖片 (SQLite)
     /// - Parameters:
     ///   - data: Data?
     ///   - filename: String
     /// - Returns: Result<Bool, Error>
-    func storeImageData(_ data: Data?, filename: String) -> Result<Bool, Error> {
+    func storeImageDataWithDatabase(_ data: Data?, filename: String) -> Result<Bool, Error> {
         
-        guard let data = data,
-              let imageFolderUrl = Constant.cacheImageFolder
-        else {
-            return .failure(Constant.MyError.notOpenURL)
-        }
+        guard let data = data else { return .failure(Constant.MyError.isEmpty) }
+        guard let imageFolderUrl = Constant.cacheImageFolder else { return .failure(Constant.MyError.notOpenURL) }
         
         let url = imageFolderUrl.appendingPathComponent(filename, isDirectory: false)
         return FileManager.default._writeData(to: url, data: data)
+    }
+    
+    /// 儲存快取圖片 (NSCache)
+    /// - Parameters:
+    ///   - data: Data?
+    ///   - filename: String
+    /// - Returns: Result<Bool, Error>
+    func storeImageDataWithCache(_ data: Data?, filename: String) -> Result<Bool, Error> {
+        
+        guard let data = data as? NSData else { return .failure(Constant.MyError.isEmpty) }
+        
+        cacheManager.setValue(data, forKey: filename as! NSString, cost: 0)
+        return .success(true)
+    }
+    
+    /// 讀取存在手機的快取圖示檔Data (SQLite)
+    /// - Parameter urlString: String
+    /// - Returns: Data?
+    func cacheImageDataWithDatabase(urlString: String) -> Data? {
+        
+        guard let url = cacheImageURL(with: urlString) else { errorBlock?(Constant.MyError.isEmpty); return nil }
+        
+        let result = FileManager.default._readData(from: url)
+        
+        switch result {
+        case .success(let data): return data
+        case .failure(let error): errorBlock?(error); return nil
+        }
+    }
+    
+    /// 讀取存在手機的快取圖示檔Data (NSCache)
+    /// - Parameter urlString: String
+    /// - Returns: Data?
+    func cacheImageDataWithCache(urlString: String) -> Data? {
+        let filename = urlString._sha1()
+        return cacheManager.value(forKey: filename as! NSString) as? Data
+    }
+    
+    /// 下載網路圖片 (SQLite)
+    /// - Parameter urlStrings: [String]
+    func downloadWebImageWithDatabase(urlStrings: [String]) async {
+        
+        let types = requestInformationTypesMaker(with: urlStrings)
+        let results = await WWNetworking.shared.multipleRequest(types: types)
+        
+        var updateUrls: [URL] = []
+        
+        results.forEach { _result in
+            
+            let result = parseHeaderResult(_result)
+                                
+            switch result {
+            case .failure(let error): errorBlock?(error)
+            case .success(let fields): if let neededUpdateUrl = updateUrlActionURL(with: fields) { updateUrls.append(neededUpdateUrl) }
+            }
+        }
+        
+        downloadImagesAction(with: updateUrls)
+        isDownloading = false
+        
+        NotificationCenter.default._post(name: .downloadWebImage)
+    }
+    
+    /// 下載網路圖片 (NSCache)
+    /// - Parameter urlStrings: [String]
+    func downloadWebImageWithCache(urlStrings: [String]) {
+        
+        var updateUrls: [URL] = []
+
+        for urlString in urlStrings {
+            
+            if let data = cacheManager.value(forKey: urlString._sha1() as! NSString) { break }
+            
+            guard let url = URL(string: urlString) else { continue }
+            updateUrls.append(url)
+        }
+        
+        downloadImagesAction(with: updateUrls)
+        isDownloading = false
+        
+        NotificationCenter.default._post(name: .downloadWebImage)
     }
     
     /// 產生[WWNetworking.RequestInformationType]

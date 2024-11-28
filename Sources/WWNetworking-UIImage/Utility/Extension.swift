@@ -253,7 +253,6 @@ extension Dictionary {
     }
 }
 
-
 // MARK: - String (function)
 extension String {
     
@@ -288,7 +287,7 @@ extension String {
     }
 }
 
-// MARK: - String (private class function)
+// MARK: - String (private function)
 private extension String {
     
     /// [計算SHA家族的雜湊值](https://zh.wikipedia.org/zh-tw/SHA家族)
