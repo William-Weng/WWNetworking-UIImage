@@ -94,7 +94,7 @@ public extension WWWebImage {
     func cacheImageData(with urlString: String) -> Data? {
         
         switch Constant.cacheType {
-        case .sqlite(_, _, _): return cacheImageDataWithDatabase(urlString: urlString)
+        case .sqlite: return cacheImageDataWithDatabase(urlString: urlString)
         case .cache: return cacheImageDataWithCache(urlString: urlString)
         }
     }
@@ -176,7 +176,7 @@ private extension WWWebImage {
     func storeImageData(_ data: Data?, filename: String) -> Result<Bool, Error> {
         
         switch Constant.cacheType {
-        case .sqlite(_, _, _): return storeImageDataWithDatabase(data, filename: filename)
+        case .sqlite: return storeImageDataWithDatabase(data, filename: filename)
         case .cache: return storeImageDataWithCache(data, filename: filename)
         }
     }
@@ -226,7 +226,7 @@ private extension WWWebImage {
             
             switch Constant.cacheType {
             case .cache: this.downloadWebImageWithCache(urlStrings: urlStrings)
-            case .sqlite(_, _, _): Task { await this.downloadWebImageWithDatabase(urlStrings: urlStrings) }
+            case .sqlite: Task { await this.downloadWebImageWithDatabase(urlStrings: urlStrings) }
             }
         }
     }
