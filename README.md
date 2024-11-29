@@ -4,7 +4,7 @@
 
 ## [Introduction - 簡介](https://swiftpackageindex.com/William-Weng)
 - This is a simple web image downloader, similar to a simple version of SDWebImage or Kingfisher.
-- 這是一個簡單的網路圖片下載工具，類似SDWebImage或Kingfisher的簡單版本。
+- 這是一個簡單的[網路圖片](https://ezgif.com/video-to-webp)下載工具，類似SDWebImage或Kingfisher的簡單版本。
 - 使用[WWNetworking](https://github.com/William-Weng/WWNetworking) + [WWSQLite3Manager](https://github.com/William-Weng/WWSQLite3Manager)套件來延伸製作，且利用網路圖片的Header-Tag，[Last-Modified](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) / [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag)，來實現快取功能…
 
 ![WWNetworking-UIImage](./Example.webp)
@@ -12,7 +12,7 @@
 ## [Installation with Swift Package Manager](https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/使用-spm-安裝第三方套件-xcode-11-新功能-2c4ffcf85b4b)
 ```bash
 dependencies: [
-    .package(url: "https://github.com/William-Weng/WWNetworking-UIImage.git", .upToNextMajor(from: "1.7.1"))
+    .package(url: "https://github.com/William-Weng/WWNetworking-UIImage.git", .upToNextMajor(from: "1.7.2"))
 ]
 ```
 
