@@ -25,7 +25,7 @@ open class WWWebImage {
     var imageSetUrls: Set<String> = []
     
     private var isDownloading = false
-    private var cacheManager = WWCacheManager<NSString, NSData>.build()
+    private var cacheManager = WWCacheManager<NSString, NSData>.build(countLimit: 100, totalCostLimit: 100 * 1024 * 1024, delegate: nil)
 
     private var downloadProgressBlock: ((WWNetworking.DownloadProgressInformation) -> Void)?
     private var removeExpiredCacheImagesProgressBlock: ((Result<WebImageInformation, RemoveImageError>) -> Void)?
@@ -403,9 +403,10 @@ private extension WWWebImage {
 
         for urlString in urlStrings {
             
-            if let data = cacheManager.value(forKey: urlString._sha1() as! NSString) { break }
+            if let data = cacheManager.value(forKey: urlString._sha1() as! NSString) { continue }
             
             guard let url = URL(string: urlString) else { continue }
+            
             updateUrls.append(url)
         }
         
