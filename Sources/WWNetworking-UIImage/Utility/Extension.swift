@@ -8,6 +8,13 @@
 import UIKit
 import CommonCrypto
 
+// MARK: - Collection (override function)
+extension Collection {
+
+    /// [為Array加上安全取值特性 => nil](https://stackoverflow.com/questions/25329186/safe-bounds-checked-array-lookup-in-swift-through-optional-bindings)
+    subscript(safe index: Index) -> Element? { return indices.contains(index) ? self[index] : nil }
+}
+
 // MARK: - Set (function)
 extension Set {
  
@@ -155,7 +162,7 @@ extension Data {
     func _string(using encoding: String.Encoding = .utf8) -> String? {
         return String(bytes: self, encoding: encoding)
     }
-
+    
     /// Data => JSON
     /// - 7b2268747470223a2022626f6479227d => {"http": "body"}
     /// - Returns: Any?
@@ -182,8 +189,7 @@ extension Data {
         return try? decoder.decode(type.self, from: self)
     }
     
-    /// 根據ImageHeader找出相對應的圖片Type (jpeg / png / gif)
-    /// - 一個一個試，找到就結束 => 二進位型圖片
+    /// 根據ImageHeader找出相對應的圖片Type (jpeg / png / gif) => 一個一個試，找到就結束 => 二進位型圖片
     /// - Parameter data: 圖片資料
     /// - Returns: Constant.ImageFormat?
     func _imageDataFormat() -> Constant.ImageFormat? {
@@ -203,14 +209,56 @@ extension Data {
             for index in 0..<imageHeader.count {
                 
                 let headerHexNumber = imageHeader[index]
-
+                
                 if (headerHexNumber == 0x00) { continue }
                 if (imageDataArray[index] != headerHexNumber) { imageType = nil; return }
                 imageType = type
             }
         }
         
-        return imageType
+        if (imageType != .png) { return imageType }
+        return _isAPNG() ? .apng : .png
+    }
+}
+
+// MARK: - Data (SHA值)
+private extension Data {
+    
+    /// [計算SHA家族的雜湊值](https://zh.wikipedia.org/zh-tw/SHA家族)
+    /// - Parameters:
+    ///   - digestLength: [雜湊值長度](https://ithelp.ithome.com.tw/articles/10241695)
+    ///   - encode: [雜湊函式](https://ithelp.ithome.com.tw/articles/10208884)
+    /// - Returns: [String](https://emn178.github.io/online-tools/)
+    func _secureHashAlgorithm(digestLength: Int32, encode: (_ data: UnsafeRawPointer?, _ len: CC_LONG, _ md: UnsafeMutablePointer<UInt8>?) -> UnsafeMutablePointer<UInt8>?) -> String {
+        
+        var hash = [UInt8](repeating: 0, count: Int(digestLength))
+        self.withUnsafeBytes { _ = encode($0.baseAddress, CC_LONG(self.count), &hash) }
+        
+        let hexBytes = hash.map { String(format: "%02hhx", $0) }
+        return hexBytes.joined()
+    }
+    
+    /// [測試是不是apng？ => 搜尋acTL區塊](https://www.silencetime.com/index.php/archives/74/)
+    /// - Returns: Bool
+    func _isAPNG() -> Bool {
+
+        let acTLBytes = Constant.ImageFormat.apng.header
+        let acTLBytesSize = acTLBytes.count
+        let bytes = lazy.map({$0})
+        
+        if (bytes.count < acTLBytesSize) { return false }
+        
+        for index in 0..<(bytes.count - acTLBytesSize) {
+            
+            if let acTLByte0 = acTLBytes[safe: 0], let byte0 = bytes[safe: index + 0] { if (acTLByte0 != byte0) { continue }}
+            if let acTLByte1 = acTLBytes[safe: 1], let byte1 = bytes[safe: index + 1] { if (acTLByte1 != byte1) { continue }}
+            if let acTLByte2 = acTLBytes[safe: 2], let byte2 = bytes[safe: index + 2] { if (acTLByte2 != byte2) { continue }}
+            if let acTLByte3 = acTLBytes[safe: 3], let byte3 = bytes[safe: index + 3] { if (acTLByte3 != byte3) { continue }}
+            
+            return true
+        }
+
+        return false
     }
 }
 

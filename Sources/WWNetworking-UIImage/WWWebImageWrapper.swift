@@ -88,6 +88,7 @@ private extension WWWebImageWrapper {
         
         switch imageType {
         case .gif: cacheGifImageDataSetting(cacheImageData, frame: imageView.frame)
+        case .apng: cacheGifImageDataSetting(cacheImageData, frame: imageView.frame)
         default: imageView.image = parseCacheImage(with: UIImage(data: cacheImageData), pixelSize: pixelSize)
         }
     }
