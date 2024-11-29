@@ -18,7 +18,7 @@ open class Constant: NSObject {
     static let databaseName = "WWWebImage.db"
     static let tableName = "CacheImage"
     
-    static var cacheType: Constant.CacheType = .cache
+    static var cacheType: Constant.CacheType = .cache()
     static var maxnumDownloadCount: UInt = 10
     static var cacheDelayTime = 60.0
     static var cacheImageFolder = WWSQLite3Manager.FileDirectoryType.caches.url()    
@@ -28,8 +28,8 @@ open class Constant: NSObject {
     
     // MARK: - 快取類型 (SQLite / NSCache)
     public enum CacheType {
-        case sqlite(_ folder: WWSQLite3Manager.FileDirectoryType, _ expiredDays: Int, _ cacheDelayTime: TimeInterval)
-        case cache
+        case sqlite(_ folder: WWSQLite3Manager.FileDirectoryType = .documents, _ expiredDays: Int = 90, _ cacheDelayTime: TimeInterval = 600)
+        case cache(_ countLimit: Int = 100, _ totalCostLimit: Int = 10 * 1024 * 1024, _ delegate: NSCacheDelegate? = nil)
     }
     
     // MARK: - 自定義錯誤

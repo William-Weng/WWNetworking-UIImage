@@ -24,10 +24,9 @@ open class WWWebImage {
     
     var imageSetUrls: Set<String> = []
     
-    private let cacheManager = WWCacheManager<NSString, NSData>.build()
-    
     private var isDownloading = false
-    
+    private var cacheManager = WWCacheManager<NSString, NSData>.build()
+
     private var downloadProgressBlock: ((WWNetworking.DownloadProgressInformation) -> Void)?
     private var removeExpiredCacheImagesProgressBlock: ((Result<WebImageInformation, RemoveImageError>) -> Void)?
     private var errorBlock: ((Error) -> Void)?
@@ -38,20 +37,22 @@ open class WWWebImage {
 // MARK: - WWNetworking (公開工具)
 public extension WWWebImage {
     
-    /// [初始化快取 - SQLite / NSCache](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
+    /// [初始化快取類型 - SQLite / NSCache](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
     /// - Parameters:
     ///   - cacheType: 快取類型 (SQLite / NSCache)
     ///   - maxnumDownloadCount: 最大同時下載數量
     ///   - defaultImage: 預設圖片
     /// - Returns: Error?
-    func initCacheType(_ cacheType: Constant.CacheType = .sqlite(.documents, 90, 600), maxnumDownloadCount: UInt = 5, defaultImage: UIImage?) -> Error? {
+    func cacheTypeSetting(_ cacheType: Constant.CacheType, maxnumDownloadCount: UInt = 5, defaultImage: UIImage?) -> Error? {
         
         Constant.cacheType = cacheType
         Constant.maxnumDownloadCount = 10
         self.defaultImage = defaultImage
         
         switch cacheType {
-        case .cache: return nil
+        case .cache(let countLimit, let totalCostLimit, let delegate):
+            cacheManager = WWCacheManager<NSString, NSData>.build(countLimit: countLimit, totalCostLimit: totalCostLimit, delegate: delegate)
+            return nil
         case .sqlite(let folder, let expiredDays, let cacheDelayTime):
             let result = initDatabase(for: folder, expiredDays: expiredDays, cacheDelayTime: cacheDelayTime)
             switch result {

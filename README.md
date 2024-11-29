@@ -12,14 +12,14 @@
 ## [Installation with Swift Package Manager](https://medium.com/彼得潘的-swift-ios-app-開發問題解答集/使用-spm-安裝第三方套件-xcode-11-新功能-2c4ffcf85b4b)
 ```bash
 dependencies: [
-    .package(url: "https://github.com/William-Weng/WWNetworking-UIImage.git", .upToNextMajor(from: "1.6.0"))
+    .package(url: "https://github.com/William-Weng/WWNetworking-UIImage.git", .upToNextMajor(from: "1.7.1"))
 ]
 ```
 
 ## 可用函式
 |函式|說明|
 |-|-|
-|initDatabase(for:expiredDays:cacheDelayTime:maxnumDownloadCount:defaultImage:)|初始化資料庫|
+|cacheTypeSetting(_:maxnumDownloadCount:defaultImage:)|初始化快取類型|
 |removeExpiredCacheImages(expiredDays:)|移除過期快取圖片 (SQLite)|
 |downloadImage(with:pixelSize:)|下載圖片 + 設定最大像素|
 |cacheImageData(with:)|讀取快取圖片資料|
@@ -31,16 +31,27 @@ dependencies: [
 ## Example
 ```swift
 import UIKit
+import WWPrint
 import WWNetworking_UIImage
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        _ = WWWebImage.shared.initDatabase(for: .documents, expiredDays: 90, cacheDelayTime: 600, maxnumDownloadCount: 10, defaultImage: UIImage(named: "no-pictures"))
+        initSetting()
         return true
+    }
+}
+
+private extension AppDelegate {
+    
+    func initSetting() {
+        
+        let defaultImage = UIImage(named: "no-pictures")
+        let error = WWWebImage.shared.cacheTypeSetting(.cache(), defaultImage: defaultImage)
+        wwPrint(error)
     }
 }
 ```

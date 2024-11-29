@@ -19,15 +19,6 @@
       }
     },
     {
-      "identity" : "wwnetworking-uiimage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/William-Weng/WWNetworking-UIImage",
-      "state" : {
-        "revision" : "68ec6b6f1686756fffc3e7e6ab9e2c913c2acbd6",
-        "version" : "1.7.0"
-      }
-    },
-    {
       "identity" : "wwprint",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/William-Weng/WWPrint.git",

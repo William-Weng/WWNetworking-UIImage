@@ -12,21 +12,23 @@ import WWNetworking_UIImage
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        let defaultImage = UIImage(named: "no-pictures")
-        // let error = WWWebImage.shared.initCacheType(.database(.documents, 90, 600), defaultImage: defaultImage)
-        let error = WWWebImage.shared.initCacheType(.cache, defaultImage: defaultImage)
-        wwPrint(error)
-        
-        WWWebImage.shared.downloadProgress { info in
-            wwPrint(info)
-        }
-        
+        initSetting()
         return true
     }
 }
 
+// MARK: - 小工具
+private extension AppDelegate {
+    
+    /// 基本設定
+    func initSetting() {
+        
+        let defaultImage = UIImage(named: "no-pictures")
+        let error = WWWebImage.shared.cacheTypeSetting(.cache(), defaultImage: defaultImage)
+        wwPrint(error)
+    }
+}
