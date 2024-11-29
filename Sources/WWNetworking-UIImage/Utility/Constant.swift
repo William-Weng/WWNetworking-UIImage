@@ -29,7 +29,7 @@ open class Constant: NSObject {
     // MARK: - 快取類型 (SQLite / NSCache)
     public enum CacheType {
         case sqlite(_ folder: WWSQLite3Manager.FileDirectoryType = .documents, _ expiredDays: Int = 90, _ cacheDelayTime: TimeInterval = 600)
-        case cache(_ countLimit: Int = 100, _ totalCostLimit: Int = 10 * 1024 * 1024, _ delegate: NSCacheDelegate? = nil)
+        case cache(_ countLimit: Int = 100, _ totalCostLimit: Int = 100 * 1024 * 1024, _ delegate: NSCacheDelegate? = nil)
     }
     
     // MARK: - 自定義錯誤

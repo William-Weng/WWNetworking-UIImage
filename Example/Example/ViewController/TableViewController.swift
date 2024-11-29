@@ -33,7 +33,7 @@ final class TableViewController: UIViewController {
         "https://i2.momoshop.com.tw/1658857094/goodsimg/0009/593/640/9593640_O_m.webp",
         "https://www.wenjianbaike.com/wp-content/uploads/2021/04/apng_wenjan.png",
         "https://i3.momoshop.com.tw/1672305576/goodsimg/0008/998/717/8998717_O_m.webp",
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmRiFJ6JP4P1rqOcKoIpW9p7UvK8oWmfRcew&usqp=CAU",
+        "https://tw.bandisoft.com/honeycam/webp/imgs/overwatch_tr.webp",
     ]
     
     override func viewDidLoad() {
