@@ -1,4 +1,4 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 5.7
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,14 +6,14 @@ import PackageDescription
 let package = Package(
     name: "WWNetworking-UIImage",
     platforms: [
-        .iOS(.v14)
+        .iOS(.v15)
     ],
     products: [
         .library(name: "WWNetworking-UIImage", targets: ["WWNetworking-UIImage"]),
     ],
     dependencies: [
         .package(url: "https://github.com/William-Weng/WWSQLite3Manager.git", from: "1.5.0"),
-        .package(url: "https://github.com/William-Weng/WWNetworking.git", from: "1.6.2"),
+        .package(url: "https://github.com/William-Weng/WWNetworking.git", from: "1.7.5"),
         .package(url: "https://github.com/William-Weng/WWCacheManager.git", from: "1.0.1"),
     ],
     targets: [

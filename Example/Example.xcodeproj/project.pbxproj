@@ -12,18 +12,18 @@
 		3DBCD87B26F198EF00522E3B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DBCD87926F198EF00522E3B /* Main.storyboard */; };
 		3DBCD87D26F198F300522E3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DBCD87C26F198F300522E3B /* Assets.xcassets */; };
 		3DBCD88026F198F300522E3B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DBCD87E26F198F300522E3B /* LaunchScreen.storyboard */; };
-		810639FA2BF455DD007E7A95 /* WWPrint in Frameworks */ = {isa = PBXBuildFile; productRef = 810639F92BF455DD007E7A95 /* WWPrint */; };
 		813C7FE42CF9502D0067DB61 /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 813C7FE32CF9502D0067DB61 /* WWNetworking-UIImage */; };
 		815AF24A29F0F55A00A8CC4D /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815AF24929F0F55A00A8CC4D /* TableViewCell.swift */; };
 		817C6FD92CF800D7009BD39E /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 817C6FD82CF800D7009BD39E /* WWNetworking-UIImage */; };
 		81AB63582C129F1D0088882B /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 81AB63572C129F1D0088882B /* WWNetworking-UIImage */; };
+		81B041F52D92890E00B698CA /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 81B041F42D92890E00B698CA /* WWNetworking-UIImage */; };
+		81B041F82D928A1300B698CA /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 81B041F72D928A1300B698CA /* WWNetworking-UIImage */; };
 		81CCEDB82CF955C900D08B24 /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 81CCEDB72CF955C900D08B24 /* WWNetworking-UIImage */; };
 		81CCEDC02CF9949100D08B24 /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 81CCEDBF2CF9949100D08B24 /* WWNetworking-UIImage */; };
 		81CCEDC62CF99A7A00D08B24 /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 81CCEDC52CF99A7A00D08B24 /* WWNetworking-UIImage */; };
 		81CCEDD12CF9B22400D08B24 /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 81CCEDD02CF9B22400D08B24 /* WWNetworking-UIImage */; };
 		81CCEDD72CF9BA7800D08B24 /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 81CCEDD62CF9BA7800D08B24 /* WWNetworking-UIImage */; };
 		81CCEDDA2CF9BADD00D08B24 /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 81CCEDD92CF9BADD00D08B24 /* WWNetworking-UIImage */; };
-		81CCEDDD2CF9BB0000D08B24 /* WWNetworking-UIImage in Frameworks */ = {isa = PBXBuildFile; productRef = 81CCEDDC2CF9BB0000D08B24 /* WWNetworking-UIImage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,10 +46,10 @@
 				813C7FE42CF9502D0067DB61 /* WWNetworking-UIImage in Frameworks */,
 				81AB63582C129F1D0088882B /* WWNetworking-UIImage in Frameworks */,
 				81CCEDC02CF9949100D08B24 /* WWNetworking-UIImage in Frameworks */,
+				81B041F52D92890E00B698CA /* WWNetworking-UIImage in Frameworks */,
 				81CCEDDA2CF9BADD00D08B24 /* WWNetworking-UIImage in Frameworks */,
+				81B041F82D928A1300B698CA /* WWNetworking-UIImage in Frameworks */,
 				81CCEDC62CF99A7A00D08B24 /* WWNetworking-UIImage in Frameworks */,
-				81CCEDDD2CF9BB0000D08B24 /* WWNetworking-UIImage in Frameworks */,
-				810639FA2BF455DD007E7A95 /* WWPrint in Frameworks */,
 				817C6FD92CF800D7009BD39E /* WWNetworking-UIImage in Frameworks */,
 				81CCEDB82CF955C900D08B24 /* WWNetworking-UIImage in Frameworks */,
 				81CCEDD72CF9BA7800D08B24 /* WWNetworking-UIImage in Frameworks */,
@@ -146,7 +146,6 @@
 			);
 			name = Example;
 			packageProductDependencies = (
-				810639F92BF455DD007E7A95 /* WWPrint */,
 				81AB63572C129F1D0088882B /* WWNetworking-UIImage */,
 				817C6FD82CF800D7009BD39E /* WWNetworking-UIImage */,
 				813C7FE32CF9502D0067DB61 /* WWNetworking-UIImage */,
@@ -156,7 +155,8 @@
 				81CCEDD02CF9B22400D08B24 /* WWNetworking-UIImage */,
 				81CCEDD62CF9BA7800D08B24 /* WWNetworking-UIImage */,
 				81CCEDD92CF9BADD00D08B24 /* WWNetworking-UIImage */,
-				81CCEDDC2CF9BB0000D08B24 /* WWNetworking-UIImage */,
+				81B041F42D92890E00B698CA /* WWNetworking-UIImage */,
+				81B041F72D928A1300B698CA /* WWNetworking-UIImage */,
 			);
 			productName = Example;
 			productReference = 3DBCD87026F198EF00522E3B /* Example.app */;
@@ -186,8 +186,7 @@
 			);
 			mainGroup = 3DBCD86726F198EF00522E3B;
 			packageReferences = (
-				810639F82BF455DD007E7A95 /* XCRemoteSwiftPackageReference "WWPrint" */,
-				81CCEDDB2CF9BB0000D08B24 /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */,
+				81B041F62D928A1300B698CA /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */,
 			);
 			productRefGroup = 3DBCD87126F198EF00522E3B /* Products */;
 			projectDirPath = "";
@@ -432,15 +431,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		810639F82BF455DD007E7A95 /* XCRemoteSwiftPackageReference "WWPrint" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/William-Weng/WWPrint.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.3.1;
-			};
-		};
-		81CCEDDB2CF9BB0000D08B24 /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */ = {
+		81B041F62D928A1300B698CA /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/William-Weng/WWNetworking-UIImage";
 			requirement = {
@@ -451,11 +442,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		810639F92BF455DD007E7A95 /* WWPrint */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 810639F82BF455DD007E7A95 /* XCRemoteSwiftPackageReference "WWPrint" */;
-			productName = WWPrint;
-		};
 		813C7FE32CF9502D0067DB61 /* WWNetworking-UIImage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "WWNetworking-UIImage";
@@ -466,6 +452,15 @@
 		};
 		81AB63572C129F1D0088882B /* WWNetworking-UIImage */ = {
 			isa = XCSwiftPackageProductDependency;
+			productName = "WWNetworking-UIImage";
+		};
+		81B041F42D92890E00B698CA /* WWNetworking-UIImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "WWNetworking-UIImage";
+		};
+		81B041F72D928A1300B698CA /* WWNetworking-UIImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 81B041F62D928A1300B698CA /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */;
 			productName = "WWNetworking-UIImage";
 		};
 		81CCEDB72CF955C900D08B24 /* WWNetworking-UIImage */ = {
@@ -490,11 +485,6 @@
 		};
 		81CCEDD92CF9BADD00D08B24 /* WWNetworking-UIImage */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = "WWNetworking-UIImage";
-		};
-		81CCEDDC2CF9BB0000D08B24 /* WWNetworking-UIImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 81CCEDDB2CF9BB0000D08B24 /* XCRemoteSwiftPackageReference "WWNetworking-UIImage" */;
 			productName = "WWNetworking-UIImage";
 		};
 /* End XCSwiftPackageProductDependency section */

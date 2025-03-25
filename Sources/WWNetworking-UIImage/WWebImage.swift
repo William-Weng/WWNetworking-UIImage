@@ -424,8 +424,8 @@ private extension WWWebImage {
         let types = urlStrings.map { urlString in
             
             let _ = API.shared.insertCacheImageUrl(urlString, for: Constant.tableName)
-            let type: WWNetworking.RequestInformationType = (httpMethod: .HEAD, urlString: urlString, contentType: .json, paramaters: nil, headers: nil, httpBodyType: nil)
-            
+            let type: WWNetworking.RequestInformationType = (httpMethod: .HEAD, urlString: urlString, timeout: 60, contentType: .json, paramaters: nil, headers: nil, httpBodyType: nil)
+
             return type
         }
 

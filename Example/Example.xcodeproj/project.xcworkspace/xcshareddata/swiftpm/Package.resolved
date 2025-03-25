@@ -1,4 +1,5 @@
 {
+  "originHash" : "3d45a440d44b090a94f1bf2d5a8fde3ad6a2b2c023930577f82a3d8825f4e38e",
   "pins" : [
     {
       "identity" : "wwcachemanager",
@@ -14,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/William-Weng/WWNetworking.git",
       "state" : {
-        "revision" : "cad6323f8ec5b7fe87ac4c0e820c0529d402e5e1",
-        "version" : "1.6.2"
+        "revision" : "9e41bb9f5ed6b19030389b77c0a73520844a20f5",
+        "version" : "1.7.5"
       }
     },
     {
@@ -28,15 +29,6 @@
       }
     },
     {
-      "identity" : "wwprint",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/William-Weng/WWPrint.git",
-      "state" : {
-        "revision" : "8f5928f5d36624d77f8fc563fd8e31a59cfac6b6",
-        "version" : "1.3.1"
-      }
-    },
-    {
       "identity" : "wwsqlite3manager",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/William-Weng/WWSQLite3Manager.git",
@@ -46,5 +38,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
