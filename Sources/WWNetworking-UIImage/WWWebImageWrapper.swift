@@ -83,13 +83,20 @@ private extension WWWebImageWrapper {
               let cacheImageData = WWWebImage.shared.cacheImageData(with: urlString),
               let imageType = cacheImageData._imageDataFormat()
         else {
-            imageView.image = parseCacheImage(with: WWWebImage.shared.defaultImage, pixelSize: pixelSize); return
+            DispatchQueue.global().async {
+                 let processedImage = self.parseCacheImage(with: WWWebImage.shared.defaultImage, pixelSize: self.pixelSize)
+                 DispatchQueue.main.async { self.imageView.image = processedImage }
+            }; return
         }
         
         switch imageType {
-        case .gif: cacheGifImageDataSetting(cacheImageData, frame: imageView.frame)
-        case .apng: cacheGifImageDataSetting(cacheImageData, frame: imageView.frame)
-        default: imageView.image = parseCacheImage(with: UIImage(data: cacheImageData), pixelSize: pixelSize)
+        case .gif, .apng:
+            self.cacheGifImageDataSetting(cacheImageData, frame: imageView.frame)
+        default:
+            DispatchQueue.global().async {
+                let processedImage = self.parseCacheImage(with: UIImage(data: cacheImageData), pixelSize: self.pixelSize)
+                DispatchQueue.main.async { self.imageView.image = processedImage }
+            }
         }
     }
     

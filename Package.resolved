@@ -1,5 +1,4 @@
 {
-  "originHash" : "3d45a440d44b090a94f1bf2d5a8fde3ad6a2b2c023930577f82a3d8825f4e38e",
   "pins" : [
     {
       "identity" : "wwcachemanager",
@@ -20,15 +19,6 @@
       }
     },
     {
-      "identity" : "wwnetworking-uiimage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/William-Weng/WWNetworking-UIImage",
-      "state" : {
-        "revision" : "9033addde058cc2927615709d552e118c9eddb66",
-        "version" : "1.7.6"
-      }
-    },
-    {
       "identity" : "wwsqlite3manager",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/William-Weng/WWSQLite3Manager.git",
@@ -38,5 +28,5 @@
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }
