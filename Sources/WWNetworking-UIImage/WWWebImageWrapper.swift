@@ -33,12 +33,12 @@ open class WWWebImageWrapper<T: UIImageView> {
 
     public init(_ imageView: T) {
         self.imageView = imageView
-        self.refreahImageView()
+        self.refreshImageView()
     }
     
     deinit {
         clearGifSetting()
-        NotificationCenter.default._remove(observer: self, name: .refreahImageView)
+        NotificationCenter.default._remove(observer: self, name: .refreshImageView)
     }
 }
 
@@ -122,11 +122,11 @@ private extension WWWebImageWrapper {
     }
     
     /// 更新圖片畫面 => NotificationCenter
-    func refreahImageView() {
+    func refreshImageView() {
         
-        NotificationCenter.default._remove(observer: self, name: .refreahImageView)
+        NotificationCenter.default._remove(observer: self, name: .refreshImageView)
         
-        NotificationCenter.default._register(name: .refreahImageView) { notification in
+        NotificationCenter.default._register(name: .refreshImageView) { notification in
             
             let urlString = self.urlString
             

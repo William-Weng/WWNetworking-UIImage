@@ -40,13 +40,13 @@ public extension WWWebImage {
     /// [初始化快取類型 - SQLite / NSCache](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
     /// - Parameters:
     ///   - cacheType: 快取類型 (SQLite / NSCache)
-    ///   - maxnumDownloadCount: 最大同時下載數量
+    ///   - maximumDownloadCount: 最大同時下載數量
     ///   - defaultImage: 預設圖片
     /// - Returns: Error?
-    func cacheTypeSetting(_ cacheType: Constant.CacheType, maxnumDownloadCount: UInt = 5, defaultImage: UIImage?) -> Error? {
+    func cacheTypeSetting(_ cacheType: Constant.CacheType, maximumDownloadCount: UInt = 5, defaultImage: UIImage?) -> Error? {
         
         Constant.cacheType = cacheType
-        Constant.maxnumDownloadCount = 10
+        Constant.maximumDownloadCount = 10
         self.defaultImage = defaultImage
         
         switch cacheType {
@@ -140,7 +140,7 @@ private extension WWWebImage {
     /// - Returns: Result<SQLite3Database.ExecuteResult, Error>
     func initDatabase(for directoryType: WWSQLite3Manager.FileDirectoryType, expiredDays: Int, cacheDelayTime: TimeInterval) -> Result<SQLite3Database.ExecuteResult, Error> {
         
-        let result = WWSQLite3Manager.shared.connent(for: directoryType, filename: Constant.databaseName)
+        let result = WWSQLite3Manager.shared.connect(for: directoryType, filename: Constant.databaseName)
         
         Constant.cacheImageFolderType = directoryType
         Constant.cacheDelayTime = cacheDelayTime
@@ -153,7 +153,7 @@ private extension WWWebImage {
             
             let result = createDatabase(database, for: Constant.tableName)
             Constant.database = database
-                        
+            
             return .success(result)
         }
     }
@@ -216,7 +216,7 @@ private extension WWWebImage {
             
             guard let this = self,
                   !this.isDownloading,
-                  let urlStrings = Optional.some(this.imageSetUrls._popFirst(count: Constant.maxnumDownloadCount)),
+                  let urlStrings = Optional.some(this.imageSetUrls._popFirst(count: Constant.maximumDownloadCount)),
                   !urlStrings.isEmpty
             else {
                 return
@@ -480,7 +480,7 @@ private extension WWWebImage {
                     API.shared.deleteCacheImageInformation(urlString: info.urlString, for: Constant.tableName)
                     self.errorBlock?(error)
                 case .success(_):
-                    NotificationCenter.default._post(name: .refreahImageView, object: info.urlString)
+                    NotificationCenter.default._post(name: .refreshImageView, object: info.urlString)
                 }
             }
         }

@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/William-Weng/WWNetworking.git",
       "state" : {
-        "revision" : "9e41bb9f5ed6b19030389b77c0a73520844a20f5",
-        "version" : "1.7.5"
+        "revision" : "77b572ec57cddb9c24dfb42c4bfa56fda98269ac",
+        "version" : "1.7.6"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/William-Weng/WWNetworking-UIImage",
       "state" : {
-        "revision" : "31464ccd9fa7fe03ade6b37e2227571bb5d0a258",
-        "version" : "1.7.4"
+        "revision" : "91b461dffcfe633b5d9a67ec281ef04c2f4b1538",
+        "version" : "1.7.5"
       }
     },
     {
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/William-Weng/WWSQLite3Manager.git",
       "state" : {
-        "revision" : "11f1d8a800d5e0516d53bbf9af18466e50821b44",
-        "version" : "1.5.0"
+        "revision" : "374deec459e7f60584944775aa3b20f7f6f6f07c",
+        "version" : "1.5.2"
       }
     }
   ],

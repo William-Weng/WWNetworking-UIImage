@@ -19,11 +19,10 @@ open class Constant: NSObject {
     static let tableName = "CacheImage"
     
     static var cacheType: Constant.CacheType = .cache()
-    static var maxnumDownloadCount: UInt = 10
+    static var maximumDownloadCount: UInt = 10
     static var cacheDelayTime = 60.0
     static var cacheImageFolder = WWSQLite3Manager.FileDirectoryType.caches.url()    
     static var cacheImageFolderType: WWSQLite3Manager.FileDirectoryType = .caches { willSet { Self.cacheImageFolder = newValue.url() }}
-    
     static var database: SQLite3Database?
     
     // MARK: - 快取類型 (SQLite / NSCache)
@@ -101,14 +100,14 @@ open class Constant: NSObject {
         var value: Notification.Name { return notificationName() }
         
         case downloadWebImage   // 下載網路圖片
-        case refreahImageView   // 更新UIImageBiew
+        case refreshImageView   // 更新UIImageView
 
         /// 顯示真實的值 => Notification.Name
         func notificationName() -> Notification.Name {
             
             switch self {
             case .downloadWebImage: return Notification._name("WWWebImage_DownloadWebImage")
-            case .refreahImageView: return Notification._name("WWWebImage_RefreahImageView")
+            case .refreshImageView: return Notification._name("WWWebImage_RefreshImageView")
             }
         }
     }
