@@ -19,7 +19,7 @@ dependencies: [
 ## 可用函式
 |函式|說明|
 |-|-|
-|cacheTypeSetting(_:maxnumDownloadCount:defaultImage:)|初始化快取類型|
+|cacheTypeSetting(_:maximumDownloadCount:defaultImage:)|初始化快取類型|
 |removeExpiredCacheImages(expiredDays:)|移除過期快取圖片 (SQLite)|
 |downloadImage(with:pixelSize:)|下載圖片 + 設定最大像素|
 |cacheImageData(with:)|讀取快取圖片資料|
