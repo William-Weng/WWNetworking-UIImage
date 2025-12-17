@@ -19,7 +19,7 @@ open class Constant: NSObject {
     static let tableName = "CacheImage"
     
     static var cacheType: Constant.CacheType = .cache()
-    static var maximumDownloadCount: UInt = 10
+    static var maximumDownloadCount: UInt = 1
     static var cacheDelayTime = 60.0
     static var cacheImageFolder = WWSQLite3Manager.FileDirectoryType.caches.url()    
     static var cacheImageFolderType: WWSQLite3Manager.FileDirectoryType = .caches { willSet { Self.cacheImageFolder = newValue.url() }}

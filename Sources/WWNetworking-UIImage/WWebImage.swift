@@ -9,27 +9,23 @@ import UIKit
 import WWNetworking
 import WWSQLite3Manager
 import WWCacheManager
+import WWOrderedSet
 
 // MARK: - WWWebImage
 open class WWWebImage {
-    
-    public struct RemoveImageError: Error {
-        let error: Error
-        let info: WebImageInformation
-    }
     
     static public let shared = WWWebImage()
     
     private(set) var defaultImage: UIImage?
     
-    var imageSetUrls: Set<String> = []
+    var imageOrderedSetUrls: WWOrderedSet<String> = .init()
+    var errorBlock: ((Error) -> Void)?
     
     private var isDownloading = false
     private var cacheManager = WWCacheManager<NSString, NSData>.build(countLimit: 100, totalCostLimit: 100 * 1024 * 1024, delegate: nil)
 
     private var downloadProgressBlock: ((WWNetworking.DownloadProgressInformation) -> Void)?
     private var removeExpiredCacheImagesProgressBlock: ((Result<WebImageInformation, RemoveImageError>) -> Void)?
-    private var errorBlock: ((Error) -> Void)?
     
     private init() { downloadWebImageWithNotification() }
 }
@@ -43,10 +39,11 @@ public extension WWWebImage {
     ///   - maximumDownloadCount: 最大同時下載數量
     ///   - defaultImage: 預設圖片
     /// - Returns: Error?
-    func cacheTypeSetting(_ cacheType: Constant.CacheType, maximumDownloadCount: UInt = 5, defaultImage: UIImage?) -> Error? {
+    func cacheTypeSetting(_ cacheType: Constant.CacheType, maximumDownloadCount: UInt = 1, defaultImage: UIImage?) -> Error? {
         
         Constant.cacheType = cacheType
-        Constant.maximumDownloadCount = 10
+        Constant.maximumDownloadCount = maximumDownloadCount
+        
         self.defaultImage = defaultImage
         
         switch cacheType {
@@ -215,12 +212,13 @@ private extension WWWebImage {
         NotificationCenter.default._register(name: .downloadWebImage) { [weak self] _ in
             
             guard let this = self,
-                  !this.isDownloading,
-                  let urlStrings = Optional.some(this.imageSetUrls._popFirst(count: Constant.maximumDownloadCount)),
-                  !urlStrings.isEmpty
+                  !this.isDownloading
             else {
                 return
             }
+            
+            let urlStrings = (0..<Constant.maximumDownloadCount).compactMap { _ in return this.imageOrderedSetUrls.popFirst }
+            if urlStrings.isEmpty { return }
             
             this.isDownloading = true
             
@@ -474,7 +472,7 @@ private extension WWWebImage {
             case .success(let info):
                 
                 let result = self.storeImageData(info.data, filename: info.urlString._sha1())
-                
+                                
                 switch result {
                 case .failure(let error):
                     API.shared.deleteCacheImageInformation(urlString: info.urlString, for: Constant.tableName)

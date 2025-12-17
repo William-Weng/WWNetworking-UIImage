@@ -37,7 +37,6 @@ final class TableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         myTableView.delegate = self
         myTableView.dataSource = self
     }

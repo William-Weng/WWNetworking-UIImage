@@ -8,7 +8,7 @@
 import UIKit
 import WWSQLite3Manager
 
-// MARK: - [](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
+// MARK: - [資料庫欄位](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
 public class WebImageInformation: Codable {
     
     let id: Int                 // 編號
@@ -41,4 +41,17 @@ extension WebImageInformation: SQLite3SchemeDelegate {
         
         return keyTypes
     }
+}
+
+// MARK: - Model
+public extension WWWebImage {
+    
+    // MARK: - 自定義的錯誤
+    struct RemoveImageError: Error {
+        let error: Error
+        let info: WebImageInformation
+    }
+    
+    // MARK: - 自定義的UIImageView (放GIF用的)
+    class GIFImageView: UIImageView {}
 }

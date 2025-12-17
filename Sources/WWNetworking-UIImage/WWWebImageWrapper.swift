@@ -20,20 +20,18 @@ extension UIImageView: WWWebImageProtocol {}
 
 // MARK: - WWWebImageWrapper
 open class WWWebImageWrapper<T: UIImageView> {
-    
-    private let gifImageViewTag = 3939889
-    
+        
     private var imageView: T
     private var urlString: String?
     private var pixelSize: Int?
     
-    private var gifImageView: UIImageView?
+    private var gifImageView: WWWebImage.GIFImageView?
     private var gifImageInformation: Constant.GIFImageInformation?
     private var gifImageAnimationBlock: ((Data) -> Void)?
 
     public init(_ imageView: T) {
         self.imageView = imageView
-        self.refreshImageView()
+        self.refreshImageView(pixelSize: pixelSize)
     }
     
     deinit {
@@ -53,17 +51,17 @@ public extension WWWebImageWrapper {
         
         self.pixelSize = pixelSize
         
-        defer { cacheImageSetting(urlString: urlString) }
-        
+        defer { cacheImageSetting(urlString: urlString, pixelSize: pixelSize) }
+                
         guard let urlString = urlString,
-              !WWWebImage.shared.imageSetUrls.contains(urlString)
+              !WWWebImage.shared.imageOrderedSetUrls.contains(urlString)
         else {
             return
         }
         
         self.urlString = urlString
         
-        WWWebImage.shared.imageSetUrls.insert(urlString)
+        WWWebImage.shared.imageOrderedSetUrls.add(urlString)
         NotificationCenter.default._post(name: .downloadWebImage, object: urlString)
     }
 }
@@ -73,7 +71,7 @@ private extension WWWebImageWrapper {
     
     /// 設定快取圖片 (設定最大解析度)
     /// - Parameter urlString: String
-    func cacheImageSetting(urlString: String?) {
+    func cacheImageSetting(urlString: String?, pixelSize: Int?) {
         
         defer { imageView.setNeedsDisplay() }
         
@@ -83,9 +81,11 @@ private extension WWWebImageWrapper {
               let cacheImageData = WWWebImage.shared.cacheImageData(with: urlString),
               let imageType = cacheImageData._imageDataFormat()
         else {
-            DispatchQueue.global().async {
-                 let processedImage = self.parseCacheImage(with: WWWebImage.shared.defaultImage, pixelSize: self.pixelSize)
-                 DispatchQueue.main.async { self.imageView.image = processedImage }
+            
+            Task { @MainActor in
+                let displayImage = WWWebImage.shared.defaultImage
+                let processedImage = self.parseCacheImage(with: displayImage, pixelSize: pixelSize)
+                imageView.image = processedImage
             }; return
         }
         
@@ -93,9 +93,11 @@ private extension WWWebImageWrapper {
         case .gif, .apng:
             self.cacheGifImageDataSetting(cacheImageData, frame: imageView.frame)
         default:
-            DispatchQueue.global().async {
-                let processedImage = self.parseCacheImage(with: UIImage(data: cacheImageData), pixelSize: self.pixelSize)
-                DispatchQueue.main.async { self.imageView.image = processedImage }
+            
+            Task { @MainActor in
+                let displayImage = UIImage(data: cacheImageData) ?? WWWebImage.shared.defaultImage
+                let processedImage = self.parseCacheImage(with: displayImage, pixelSize: pixelSize)
+                imageView.image = processedImage
             }
         }
     }
@@ -106,16 +108,14 @@ private extension WWWebImageWrapper {
     ///   - frame: CGRect
     func cacheGifImageDataSetting(_ cacheImageData: Data, frame: CGRect) {
         
-        gifImageView = UIImageView(frame: frame)
+        gifImageView = WWWebImage.GIFImageView(frame: frame)
         gifImageView?.contentMode = .scaleAspectFit
-        gifImageView?.tag = gifImageViewTag
         
         gifImageAnimationBlock = { [weak self] data in
-            
+                        
             _ = self?.gifImageView?._GIF(data: data) { result in
-                
                 switch result {
-                case .failure(let error): print(error)
+                case .failure(let error): WWWebImage.shared.errorBlock?(error)
                 case .success(let info): self?.gifImageInformation = info
                 }
             }
@@ -129,7 +129,7 @@ private extension WWWebImageWrapper {
     }
     
     /// 更新圖片畫面 => NotificationCenter
-    func refreshImageView() {
+    func refreshImageView(pixelSize: Int?) {
         
         NotificationCenter.default._remove(observer: self, name: .refreshImageView)
         
@@ -138,7 +138,7 @@ private extension WWWebImageWrapper {
             let urlString = self.urlString
             
             NotificationCenter.default._post(name: .downloadWebImage, object: urlString)
-            DispatchQueue.main.safeAsync { self.cacheImageSetting(urlString: urlString) }
+            DispatchQueue.main.safeAsync { self.cacheImageSetting(urlString: urlString, pixelSize: pixelSize) }
         }
     }
     
@@ -149,15 +149,15 @@ private extension WWWebImageWrapper {
     /// - Returns: UIImage?
     func parseCacheImage(with image: UIImage?, pixelSize: Int?) -> UIImage? {
         
-        if let pixelSize = self.pixelSize { return image?._thumbnail(max: pixelSize) }
+        if let pixelSize = pixelSize { return image?._thumbnail(max: pixelSize) }
         return image
     }
     
     /// 清除GIF的相關設定
     func clearGifSetting() {
         
-        if let _gifView = imageView.viewWithTag(gifImageViewTag) { _gifView.removeFromSuperview() }
-        
+        if let _gifView = imageView.subviews.first { $0 is WWWebImage.GIFImageView } { _gifView.removeFromSuperview() }
+                
         gifImageInformation?.pointer.pointee = true
         gifImageAnimationBlock = nil
         gifImageView?.removeFromSuperview()

@@ -27,8 +27,6 @@ private extension AppDelegate {
     func initSetting() {
         
         let defaultImage = UIImage(named: "no-pictures")
-        let error = WWWebImage.shared.cacheTypeSetting(.cache(), defaultImage: defaultImage)
-        
-        print(error.debugDescription)
+        _ = WWWebImage.shared.cacheTypeSetting(.cache(), maximumDownloadCount: 5, defaultImage: defaultImage)
     }
 }
