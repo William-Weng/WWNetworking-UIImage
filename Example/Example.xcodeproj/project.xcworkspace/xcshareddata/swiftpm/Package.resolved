@@ -1,5 +1,5 @@
 {
-  "originHash" : "3d45a440d44b090a94f1bf2d5a8fde3ad6a2b2c023930577f82a3d8825f4e38e",
+  "originHash" : "69235578a7d8096ea6e67d68cbeb39d021890d377871d894547f2f622661d589",
   "pins" : [
     {
       "identity" : "wwcachemanager",
@@ -17,15 +17,6 @@
       "state" : {
         "revision" : "77b572ec57cddb9c24dfb42c4bfa56fda98269ac",
         "version" : "1.7.6"
-      }
-    },
-    {
-      "identity" : "wwnetworking-uiimage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/William-Weng/WWNetworking-UIImage",
-      "state" : {
-        "revision" : "266cf819720341e362712038db503671b385956b",
-        "version" : "1.7.7"
       }
     },
     {
