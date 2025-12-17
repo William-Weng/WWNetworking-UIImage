@@ -24,8 +24,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/William-Weng/WWNetworking-UIImage",
       "state" : {
-        "revision" : "62df017cae834056fff657a85a0af7e40d7c402e",
-        "version" : "1.8.0"
+        "revision" : "9cfc93b5cf81280fa319172ee191968f3cdb65b7",
+        "version" : "1.8.1"
+      }
+    },
+    {
+      "identity" : "wworderedset",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/William-Weng/WWOrderedSet.git",
+      "state" : {
+        "revision" : "f55e78e72725103eeb09ca27b70442e2098b6241",
+        "version" : "1.0.2"
       }
     },
     {
