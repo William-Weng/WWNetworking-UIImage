@@ -6,14 +6,14 @@ import PackageDescription
 let package = Package(
     name: "WWNetworking-UIImage",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v16)
     ],
     products: [
         .library(name: "WWNetworking-UIImage", targets: ["WWNetworking-UIImage"]),
     ],
     dependencies: [
         .package(url: "https://github.com/William-Weng/WWSQLite3Manager.git", from: "1.5.2"),
-        .package(url: "https://github.com/William-Weng/WWNetworking.git", "1.7.0"..<"1.8.0"),
+        .package(url: "https://github.com/William-Weng/WWNetworking.git", "1.8.0"..<"1.9.0"),
         .package(url: "https://github.com/William-Weng/WWCacheManager.git", from: "1.0.1"),
     ],
     targets: [
