@@ -20,14 +20,18 @@ open class WWWebImage {
     
     var imageOrderedSetUrls: WWOrderedSet<String> = .init()
     var errorBlock: ((Error) -> Void)?
-    
+    var downloadQueue: OperationQueue?
+
     private var isDownloading = false
     private var cacheManager = WWCacheManager<NSString, NSData>.build(countLimit: 100, totalCostLimit: 100 * 1024 * 1024, delegate: nil)
 
     private var downloadProgressBlock: ((WWNetworking.DownloadProgressInformation) -> Void)?
     private var removeExpiredCacheImagesProgressBlock: ((Result<WebImageInformation, RemoveImageError>) -> Void)?
     
-    private init() { downloadWebImageWithNotification() }
+    private init() {
+        initDownloadQueue()
+        downloadWebImageWithNotification()
+    }
 }
 
 // MARK: - WWNetworking (公開工具)
@@ -37,12 +41,15 @@ public extension WWWebImage {
     /// - Parameters:
     ///   - cacheType: 快取類型 (SQLite / NSCache)
     ///   - maximumDownloadCount: 最大同時下載數量
+    ///   - downloadQueue: 下載的執行緒
     ///   - defaultImage: 預設圖片
     /// - Returns: Error?
-    func cacheTypeSetting(_ cacheType: Constant.CacheType, maximumDownloadCount: UInt = 1, defaultImage: UIImage?) -> Error? {
+    func cacheTypeSetting(_ cacheType: Constant.CacheType = .cache(), maximumDownloadCount: UInt = 5, downloadQueue: OperationQueue? = .current, defaultImage: UIImage?) -> Error? {
         
         Constant.cacheType = cacheType
         Constant.maximumDownloadCount = maximumDownloadCount
+        
+        if let downloadQueue = downloadQueue { self.downloadQueue = downloadQueue }
         
         self.defaultImage = defaultImage
         
@@ -153,6 +160,12 @@ private extension WWWebImage {
             
             return .success(result)
         }
+    }
+    
+    /// 初始化下載執行緒
+    func initDownloadQueue() {
+        let downloadQueue = OperationQueue()
+        downloadQueue.qualityOfService = .background
     }
     
     /// 建立資料庫
@@ -422,7 +435,7 @@ private extension WWWebImage {
         let types = urlStrings.map { urlString in
             
             let _ = API.shared.insertCacheImageUrl(urlString, for: Constant.tableName)
-            let type: WWNetworking.RequestInformationType = (httpMethod: .HEAD, urlString: urlString, timeout: 60, contentType: .json, paramaters: nil, headers: nil, httpBodyType: nil)
+            let type: WWNetworking.RequestInformationType = (httpMethod: .HEAD, urlString: urlString, timeout: 60, contentType: .json, paramaters: nil, headers: nil, httpBodyType: nil, delegateQueue: downloadQueue)
 
             return type
         }
@@ -461,7 +474,7 @@ private extension WWWebImage {
         
         let updateUrlStrings = urls.map { $0.absoluteString }
         
-        WWNetworking.shared.multipleDownload(urlStrings: updateUrlStrings, delegateQueue: .current) { progress in
+        WWNetworking.shared.multipleDownload(urlStrings: updateUrlStrings, delegateQueue: downloadQueue) { progress in
             
             WWWebImage.shared.downloadProgressBlock?(progress)
             

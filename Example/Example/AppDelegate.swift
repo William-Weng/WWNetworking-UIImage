@@ -15,18 +15,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        initSetting()
+        _ = WWWebImage.shared.cacheTypeSetting(defaultImage: UIImage(named: "no-pictures"))
         return true
-    }
-}
-
-// MARK: - 小工具
-private extension AppDelegate {
-    
-    /// 基本設定
-    func initSetting() {
-        
-        let defaultImage = UIImage(named: "no-pictures")
-        _ = WWWebImage.shared.cacheTypeSetting(.cache(), maximumDownloadCount: 5, defaultImage: defaultImage)
     }
 }
