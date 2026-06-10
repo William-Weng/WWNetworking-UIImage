@@ -1,4 +1,4 @@
-# ⚠️ WWWebImage 已停止維護 / This Project is Deprecated
+# ⚠️ `WWNetworking-UIImage` 已停止維護 / This Project is Deprecated
 
 > **中文：** 本專案已不再積極維護，不會修復 bug 或新增功能。建議使用其他替代方案。  
 > **English:** This project is no longer maintained. No bug fixes or new features will be added. Consider using alternative solutions.
