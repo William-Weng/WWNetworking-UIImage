@@ -1,3 +1,19 @@
+# ⚠️ WWWebImage 已停止維護 / This Project is Deprecated
+
+> **中文：** 本專案已不再積極維護，不會修復 bug 或新增功能。建議使用其他替代方案。  
+> **English:** This project is no longer maintained. No bug fixes or new features will be added. Consider using alternative solutions.
+
+## 🔄 替代方案建議 / Alternatives
+
+建議使用以下活躍維護的圖片下載與緩存框架：
+
+- [**Kingfisher**] - 成熟穩定的 Swift 圖片下載庫
+- [**Nuke**](https://github.com/kean/Nuke) - 高性能的圖片下載與緩存框架
+- [**SDWebImage**](https://github.com/sdwebimage/sdwebimage) - 經典的 iOS 圖片緩存解決方案
+- [**WWWebImage**](https://github.com/sdwebimage/sdwebimage) - Async/Await 版的網路圖片下載工具，類似 SDWebImage / Kingfisher 的簡化實作
+
+---
+
 # WWNetworking-UIImage
 
 [![Swift-5.7](https://img.shields.io/badge/Swift-5.7-orange.svg?style=flat)](https://developer.apple.com/swift/) [![iOS-15.0](https://img.shields.io/badge/iOS-15.0-pink.svg?style=flat)](https://developer.apple.com/swift/) ![](https://img.shields.io/github/v/tag/William-Weng/WWNetworking-UIImage) [![Swift Package Manager-SUCCESS](https://img.shields.io/badge/Swift_Package_Manager-SUCCESS-blue.svg?style=flat)](https://developer.apple.com/swift/) [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-yellow.svg?style=flat)](https://developer.apple.com/swift/)
