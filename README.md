@@ -7,10 +7,10 @@
 
 建議使用以下活躍維護的圖片下載與緩存框架：
 
-- [**Kingfisher**] - 成熟穩定的 Swift 圖片下載庫
+- [**Kingfisher**](https://github.com/onevcat/kingfisher) - 成熟穩定的 Swift 圖片下載庫
 - [**Nuke**](https://github.com/kean/Nuke) - 高性能的圖片下載與緩存框架
 - [**SDWebImage**](https://github.com/sdwebimage/sdwebimage) - 經典的 iOS 圖片緩存解決方案
-- [**WWWebImage**](https://github.com/sdwebimage/sdwebimage) - Async/Await 版的網路圖片下載工具，類似 SDWebImage / Kingfisher 的簡化實作
+- [**WWWebImage**](https://github.com/William-Weng/WWWebImage) - Async/Await 版的網路圖片下載工具，類似 SDWebImage / Kingfisher 的簡化實作
 
 ---
 
