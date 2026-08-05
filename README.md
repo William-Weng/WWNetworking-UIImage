@@ -1,7 +1,7 @@
 # ⚠️ `WWNetworking-UIImage` 已停止維護 / This Project is Deprecated
 
-> **中文：** 本專案已不再積極維護，不會修復 bug 或新增功能。建議使用`[WWWebImage](https://github.com/William-Weng/WWWebImage)`替代。  
-> **English:** This project is no longer actively maintained. Bugs will not be fixed, and no new features will be added. Please use `[WWWebImage](https://github.com/William-Weng/WWWebImage)` instead.
+> **中文：** 本專案已不再積極維護，不會修復 bug 或新增功能。建議使用 [WWWebImage](https://github.com/William-Weng/WWWebImage) 替代。  
+> **English:** This project is no longer actively maintained. Bugs will not be fixed, and no new features will be added. Please use [WWWebImage](https://github.com/William-Weng/WWWebImage) instead.
 
 ## 🔄 替代方案建議 / Alternatives
 
